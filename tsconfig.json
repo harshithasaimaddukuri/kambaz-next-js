@@ -22,6 +22,6 @@
       "<yes>/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/Labs/Toc.tx"],
   "exclude": ["node_modules"]
 }
