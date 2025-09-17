@@ -1,7 +1,7 @@
 import Link from "next/link";
 export default function Profile() {
   return (
-    <div id="wd-profile-screen">
+    <div id="wd-Profile-screen">
       <h3>Profile</h3>
       <input defaultValue="alice" placeholder="username" className="wd-username"/><br/>
       <input defaultValue="123"   placeholder="password" type="password"

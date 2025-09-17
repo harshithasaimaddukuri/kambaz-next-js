@@ -1,5 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
+import reactjsImg from "@/public/images/reactjs.jpg";
+import nodejsImg from "@/public/images/nodejs.jpg";
+import pythonImg from "@/public/images/python.jpg";
+import javaImg from "@/public/images/java.jpg";
+import databaseImg from "@/public/images/database.jpg";
 
 export default function Dashboard() {
   return (

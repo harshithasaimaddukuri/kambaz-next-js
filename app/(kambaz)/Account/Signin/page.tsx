@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Signin() {
   return (
-    <div id="wd-signin-screen">
+    <div id="wd-Signin-screen">
       <h3>Sign in</h3>
 
       <input

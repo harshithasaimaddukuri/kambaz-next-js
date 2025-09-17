@@ -20,8 +20,29 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ margin: 0, padding: 0 }}
+      >
+        
+        <main style={{ paddingBottom: "50px" }}>{children}</main>
+
+        <footer
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: "#f3f4f6",
+            borderTop: "1px solid #ccc",
+            padding: "8px",
+            textAlign: "center",
+            fontSize: "14px",
+            color: "#333",
+          }}
+        >
+          Harshitha Sai Maddukuri | Section: 05 | 002038083 | CRN: 19730 | CS 5610 - Web Development
+        </footer>
       </body>
     </html>
   );
