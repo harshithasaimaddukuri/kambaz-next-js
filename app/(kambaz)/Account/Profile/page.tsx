@@ -17,4 +17,3 @@ export default function Profile() {
       <Link href="Signin" > Sign out </Link>
     </div>
 );}
-

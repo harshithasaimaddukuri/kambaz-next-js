@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Assignments() {
     return (
       <div id="wd-assignments">
@@ -9,41 +11,41 @@ export default function Assignments() {
           ASSIGNMENTS 40% of Total <button>+</button> </h3>
         <ul id="wd-assignment-list">
           <li className="wd-assignment-list-item">
-            <a href="/Courses/1234/Assignments/123"
+            <Link href="/Courses/1234/Assignments/123"
                className="wd-assignment-link" >
               A1 - ENV + HTML
-              </a>
+            </Link>
           <div className="wd-assignment-details">
-            <span>Multiple Modules |</span>
-            <span> Due Sep 18 at 11:59pm |</span>
+            <span>Multiple Modules | <strong>Not available Until</strong>May 6 at 12:00am</span>
+            <span> Due may 13 at 11:59pm |</span>
             <span> 100 pts</span>
           </div>
         </li>
 
         <li className="wd-assignment-list-item">
-          <a
+          <Link
             href="/Courses/1234/Assignments/124"
             className="wd-assignment-link"
           >
             A2 - CSS + BOOTSTRAP
-          </a>
+          </Link>
           <div className="wd-assignment-details">
-            <span>Multiple Modules |</span>
-            <span> Due Sep 25 at 11:59pm |</span>
+            <span>Multiple Modules |<strong>Not available Until</strong>May 13 at 12:00am</span>
+            <span> Due May 20 at 11:59pm |</span>
             <span> 100 pts</span>
           </div>
         </li>
 
         <li className="wd-assignment-list-item">
-          <a
+          <Link
             href="/Courses/1234/Assignments/125"
             className="wd-assignment-link"
           >
             A3 - JAVASCRIPT + REACT
-          </a>
+          </Link>
           <div className="wd-assignment-details">
-            <span>Multiple Modules |</span>
-            <span> Due Oct 2 at 11:59pm |</span>
+            <span>Multiple Modules | <strong>Not available Until</strong>May 20 at 12:00 am</span>
+            <span> Due May 27 at 11:59pm |</span>
             <span> 100 pts</span>
           </div>
         </li>
