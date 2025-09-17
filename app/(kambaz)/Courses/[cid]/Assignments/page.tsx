@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export default function Assignments() {
@@ -22,6 +24,7 @@ export default function Assignments() {
             <span>100 pts</span>
           </div>
         </li>
+
         <li className="wd-assignment-list-item">
           <Link href="/Courses/1234/Assignments/124" className="wd-assignment-link">
             A2 - CSS + BOOTSTRAP
@@ -32,6 +35,7 @@ export default function Assignments() {
             <span>100 pts</span>
           </div>
         </li>
+
         <li className="wd-assignment-list-item">
           <Link href="/Courses/1234/Assignments/125" className="wd-assignment-link">
             A3 - JAVASCRIPT + REACT

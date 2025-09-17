@@ -14,22 +14,29 @@ export default function Lab1() {
       <div id="wd-p-tag">
         <h4>Paragraph Tag</h4>
         <p id="wd-p-1">
-          This is a paragraph. We often separate a long set of sentences with vertical spaces to make the text easier to read. Browsers ignore vertical white spaces and render all the text as one single set of sentences. To force the browser to add vertical spacing, wrap the paragraphs you want to separate with the paragraph tag.
+          This is a paragraph. We often separate a long set of sentences with vertical spaces
+          to make the text easier to read. Browsers ignore vertical white spaces and render all
+          the text as one single set of sentences. To force the browser to add vertical spacing,
+          wrap the paragraphs you want to separate with the paragraph tag.
         </p>
         <p id="wd-p-2">
-          This is the first paragraph. The paragraph tag is used to format vertical gaps between long pieces of text like this one.
+          This is the first paragraph. The paragraph tag is used to format
+          vertical gaps between long pieces of text like this one.
         </p>
         <p id="wd-p-3">
-          This is the second paragraph. Even though there is a deliberate white gap between the paragraph above and this paragraph, by default browsers render them as one contiguous piece of text as shown here on the right.
+          This is the second paragraph. Even though there is a deliberate white
+          gap between the paragraph above and this paragraph, by default
+          browsers render them as one contiguous piece of text as shown here on
+          the right.
         </p>
         <p id="wd-p-4">
-          This is the third paragraph. Wrap each paragraph with the paragraph tag to tell browsers to render the gaps.
+          This is the third paragraph. Wrap each paragraph with the paragraph
+          tag to tell browsers to render the gaps.
         </p>
       </div>
 
       <div id="wd-lists">
         <h4>List Tags</h4>
-
         <h5>Ordered List Tag</h5>
         <p>How to make pancakes:</p>
         <ol id="wd-pancakes">
@@ -145,9 +152,9 @@ export default function Lab1() {
 
           <h5>Text boxes</h5>
           <label>Biography:</label><br/>
-          <textarea 
-            id="wd-textarea" 
-            cols={30} 
+          <textarea
+            id="wd-textarea"
+            cols={30}
             rows={10}
             defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
           />
@@ -227,7 +234,12 @@ export default function Lab1() {
       <h4>Anchor tag</h4>
       <p>
         Please <a href="https://www.lipsum.com" id="wd-lipsum">click here</a> to get dummy text<br/>
-        <a href="https://github.com/harshithasaimaddukuri/kambaz-next-js" id="wd-github" target="_blank">
+        <a
+          href="https://github.com/harshithasaimaddukuri/kambaz-next-js"
+          id="wd-github"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           My GitHub Repository
         </a>
       </p>
