@@ -22,16 +22,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ margin: 0, padding: 0 }}
+        style={{ margin: 0, minHeight: "100vh", display: "flex", flexDirection: "column" }}
       >
-        
-        <main style={{ paddingBottom: "50px" }}>{children}</main>
+        <main style={{ flex: 1 }}>{children}</main>
 
         <footer
           style={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
             width: "100%",
             backgroundColor: "#f3f4f6",
             borderTop: "1px solid #ccc",
