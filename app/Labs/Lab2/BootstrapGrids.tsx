@@ -11,7 +11,7 @@ export default function BootstrapGrids() {
           <Col className="bg-primary text-white"><h3>Right half</h3></Col>
         </Row>
         <Row>
-          <Col xs={4} className="bg-warning"><h3>One third</h3></Col>
+          <Col xs={4} className="bg-warning"><h3>One thirds</h3></Col>
           <Col xs={8} className="bg-success text-white"><h3>Two thirds</h3></Col>
         </Row>
         <Row>
