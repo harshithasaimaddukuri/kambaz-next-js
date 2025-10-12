@@ -14,7 +14,8 @@ export default function MapFunction() {
           {todos.map((todo, index) => (
             <li key={index}>{todo}</li>
           ))}
-        </ol><hr/>
+        </ol><hr />
       </div>
     );
   }
+  
