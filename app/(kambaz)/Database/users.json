@@ -1,0 +1,98 @@
+[
+    {
+      "_id": "123",
+      "firstName": "Tony",
+      "lastName": "Stark",
+      "username": "ironman",
+      "password": "hulkbuster",
+      "section": "S101",
+      "role": "STUDENT",
+      "loginId": "001",
+      "lastActivity": "2024-10-01",
+      "totalActivity": "10:21:32"
+    },
+    {
+      "_id": "234",
+      "firstName": "Bruce",
+      "lastName": "Wayne",
+      "username": "batman",
+      "password": "kryptonite",
+      "section": "S101",
+      "role": "STUDENT",
+      "loginId": "002",
+      "lastActivity": "2024-09-28",
+      "totalActivity": "08:15:42"
+    },
+    {
+      "_id": "345",
+      "firstName": "Steve",
+      "lastName": "Rogers",
+      "username": "captain",
+      "password": "shield123",
+      "section": "S101",
+      "role": "STUDENT",
+      "loginId": "003",
+      "lastActivity": "2024-09-30",
+      "totalActivity": "12:45:18"
+    },
+    {
+      "_id": "456",
+      "firstName": "Natasha",
+      "lastName": "Romanoff",
+      "username": "blackwidow",
+      "password": "redroom",
+      "section": "S102",
+      "role": "STUDENT",
+      "loginId": "004",
+      "lastActivity": "2024-10-02",
+      "totalActivity": "09:30:25"
+    },
+    {
+      "_id": "567",
+      "firstName": "Thor",
+      "lastName": "Odinson",
+      "username": "thor",
+      "password": "mjolnir",
+      "section": "S102",
+      "role": "TA",
+      "loginId": "005",
+      "lastActivity": "2024-10-03",
+      "totalActivity": "15:22:10"
+    },
+    {
+      "_id": "678",
+      "firstName": "Peter",
+      "lastName": "Parker",
+      "username": "spiderman",
+      "password": "web123",
+      "section": "S102",
+      "role": "STUDENT",
+      "loginId": "006",
+      "lastActivity": "2024-09-29",
+      "totalActivity": "07:55:33"
+    },
+    {
+      "_id": "789",
+      "firstName": "Bruce",
+      "lastName": "Banner",
+      "username": "hulk",
+      "password": "gamma",
+      "section": "S103",
+      "role": "STUDENT",
+      "loginId": "007",
+      "lastActivity": "2024-10-01",
+      "totalActivity": "11:40:15"
+    },
+    {
+      "_id": "890",
+      "firstName": "Clint",
+      "lastName": "Barton",
+      "username": "hawkeye",
+      "password": "arrow",
+      "section": "S103",
+      "role": "STUDENT",
+      "loginId": "008",
+      "lastActivity": "2024-09-27",
+      "totalActivity": "06:30:50"
+    }
+  ]

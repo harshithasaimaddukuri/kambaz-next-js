@@ -1,12 +1,23 @@
+"use client";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import Link from "next/link";
-
+import { usePathname } from "next/navigation";
 
 export default function KambazNavigation() {
+  const pathname = usePathname();
+  
+  const links = [
+    { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard, id: "wd-dashboard-link" },
+    { label: "Courses", path: "/Dashboard", icon: LiaBookSolid, id: "wd-courses-link" },
+    { label: "Calendar", path: "/Calendar", icon: IoCalendarOutline, id: "wd-calendar-link" },
+    { label: "Inbox", path: "/Inbox", icon: FaInbox, id: "wd-inbox-link" },
+    { label: "Labs", path: "/Labs", icon: LiaBookSolid, id: "wd-labs-link" },
+  ];
+
   return (
     <ListGroup
       className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
@@ -23,7 +34,7 @@ export default function KambazNavigation() {
         <img src="/images/NEU.png" width="75px" alt="Northeastern University" />
       </ListGroupItem>
       <br />
-
+      
       <ListGroupItem className="border-0 bg-black text-center">
         <Link
           href="/Account"
@@ -37,71 +48,25 @@ export default function KambazNavigation() {
       </ListGroupItem>
       <br />
 
-      <ListGroupItem className="border-0 bg-white text-center">
-        <Link
-          href="/Dashboard"
-          id="wd-dashboard-link"
-          className="text-danger text-decoration-none"
-        >
-          <AiOutlineDashboard className="fs-1 text-danger" />
-          <br />
-          Dashboard
-        </Link>
-      </ListGroupItem>
-      <br />
-
-      <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Courses"
-          id="wd-courses-link"
-          className="text-white text-decoration-none"
-        >
-          <LiaBookSolid className="fs-1 text-danger" />
-          <br />
-          Courses
-        </Link>
-      </ListGroupItem>
-      <br />
-
-      <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Calendar"
-          id="wd-calendar-link"
-          className="text-white text-decoration-none"
-        >
-          <IoCalendarOutline className="fs-1 text-danger" />
-          <br />
-          Calendar
-        </Link>
-      </ListGroupItem>
-      <br />
-
-      <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Inbox"
-          id="wd-inbox-link"
-          className="text-white text-decoration-none"
-        >
-          <FaInbox className="fs-1 text-danger" />
-          <br />
-          Inbox
-        </Link>
-      </ListGroupItem>
-      <br />
-
-      <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Labs"
-          id="wd-labs-link"
-          className="text-white text-decoration-none"
-        >
-          <LiaBookSolid className="fs-1 text-danger" />
-          <br />
-          Labs
-        </Link>
-      </ListGroupItem>
-      <br />
-
+      {links.map((link) => {
+        const Icon = link.icon;
+        return (
+          <div key={link.id}>
+            <ListGroupItem className="border-0 bg-black text-center">
+              <Link
+                href={link.path}
+                id={link.id}
+                className="text-white text-decoration-none"
+              >
+                <Icon className="fs-1 text-danger" />
+                <br />
+                {link.label}
+              </Link>
+            </ListGroupItem>
+            <br />
+          </div>
+        );
+      })}
     </ListGroup>
   );
 }
