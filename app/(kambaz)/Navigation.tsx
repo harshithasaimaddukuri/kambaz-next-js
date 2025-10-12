@@ -5,11 +5,8 @@ import { LiaBookSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function KambazNavigation() {
-  const pathname = usePathname();
-  
   const links = [
     { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard, id: "wd-dashboard-link" },
     { label: "Courses", path: "/Dashboard", icon: LiaBookSolid, id: "wd-courses-link" },

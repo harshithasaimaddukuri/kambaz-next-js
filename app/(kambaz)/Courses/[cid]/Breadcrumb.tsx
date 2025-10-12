@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 export default function Breadcrumb({ 
   course 
 }: { 
-  course: { name: string } | undefined 
+  course: { name: string; _id: string } | undefined 
 }) {
   const pathname = usePathname();
   return (
