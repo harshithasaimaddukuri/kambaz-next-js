@@ -19,26 +19,31 @@ export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
   const amts: Assignment[] = db.assignments as Assignment[];
 
+  const propulsionAssignments: Assignment[] = [
+    { _id: "A1", title: "Propulsion Assignment", course: cid!, points: 100 },
+    { _id: "A2", title: "Combustion Analysis", course: cid!, points: 90 },
+    { _id: "A3", title: "Nozzle Design Project", course: cid!, points: 120 },
+  ];
+
   const formatAssignmentId = (id: string) => id.replace(/^A0*/, "A");
 
   const getAssignmentDates = (assignmentId: string) => {
     switch (assignmentId) {
-      case "A101":
-      case "A201":
-      case "A301":
+      case "A1":
         return { available: "May 6 at 12:00am", due: "May 13 at 11:59pm" };
-      case "A102":
-      case "A202":
-      case "A302":
+      case "A2":
         return { available: "May 13 at 12:00am", due: "May 20 at 11:59pm" };
-      case "A103":
-      case "A203":
-      case "A303":
+      case "A3":
         return { available: "May 20 at 12:00am", due: "May 27 at 11:59pm" };
       default:
         return { available: "May 6 at 12:00am", due: "May 13 at 11:59pm" };
     }
   };
+
+  const courseAssignments =
+    cid === "RS101" 
+      ? propulsionAssignments
+      : amts.filter((amt) => amt.course === cid);
 
   return (
     <div id="wd-assignments">
@@ -51,7 +56,12 @@ export default function Assignments() {
           style={{ maxWidth: "300px" }}
         />
         <div>
-          <Button variant="secondary" size="lg" className="me-2" id="wd-add-assignment-group">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="me-2"
+            id="wd-add-assignment-group"
+          >
             <FaPlus className="me-2" />
             Group
           </Button>
@@ -80,46 +90,46 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="rounded-0">
-            {amts
-              .filter((amt) => amt.course === cid)
-              .map((crsAmt) => {
-                const dates = getAssignmentDates(crsAmt._id);
-                return (
-                  <ListGroupItem
-                    key={crsAmt._id}
-                    className="wd-assignment-item p-3 ps-1 d-flex align-items-start"
-                  >
-                    <BsGripVertical className="me-2 fs-3 mt-1" />
-                    <FaFileAlt className="me-2 mt-1 text-success" />
-                    <div className="flex-grow-1">
-                      <Link
-                        href={`/Courses/${crsAmt.course}/Assignments/${crsAmt._id}`}
-                        className="text-decoration-none"
-                      >
-                        <strong className="text-dark">{formatAssignmentId(crsAmt._id)}</strong>
-                      </Link>
-                      <div className="text-muted small mt-1">
-                        <span className="text-danger">{crsAmt.title}</span>
-                        <span className="mx-1">|</span>
-                        <span>
-                          <strong>Not available until</strong> {dates.available}
-                        </span>
-                        <span className="mx-1">|</span>
-                        <br />
-                        <span>
-                          <strong>Due</strong> {dates.due}
-                        </span>
-                        <span className="mx-1">|</span>
-                        <span>{crsAmt.points} pts</span>
-                      </div>
+            {courseAssignments.map((crsAmt) => {
+              const dates = getAssignmentDates(crsAmt._id);
+              return (
+                <ListGroupItem
+                  key={crsAmt._id}
+                  className="wd-assignment-item p-3 ps-1 d-flex align-items-start"
+                >
+                  <BsGripVertical className="me-2 fs-3 mt-1" />
+                  <FaFileAlt className="me-2 mt-1 text-success" />
+                  <div className="flex-grow-1">
+                    <Link
+                      href={`/Courses/${cid}/Assignments/${crsAmt._id}`}
+                      className="text-decoration-none"
+                    >
+                      <strong className="text-dark">
+                        {formatAssignmentId(crsAmt._id)}
+                      </strong>
+                    </Link>
+                    <div className="text-muted small mt-1">
+                      <span className="text-danger">{crsAmt.title}</span>
+                      <span className="mx-1">|</span>
+                      <span>
+                        <strong>Not available until</strong> {dates.available}
+                      </span>
+                      <span className="mx-1">|</span>
+                      <br />
+                      <span>
+                        <strong>Due</strong> {dates.due}
+                      </span>
+                      <span className="mx-1">|</span>
+                      <span>{crsAmt.points} pts</span>
                     </div>
-                    <div className="d-flex align-items-center">
-                      <FaCheckCircle className="text-success me-2" />
-                      <IoEllipsisVertical className="fs-4" />
-                    </div>
-                  </ListGroupItem>
-                );
-              })}
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <FaCheckCircle className="text-success me-2" />
+                    <IoEllipsisVertical className="fs-4" />
+                  </div>
+                </ListGroupItem>
+              );
+            })}
           </ListGroup>
         </ListGroupItem>
       </ListGroup>
