@@ -14,7 +14,15 @@ interface Assignment {
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
-  const amts: Assignment[] = db.assignments as Assignment[];
+
+  const amts: Assignment[] =
+    cid === "RS101"
+      ? [
+          { _id: "A1", title: "Propulsion Assignment", course: "RS101", points: 100 },
+          { _id: "A2", title: "Combustion Analysis", course: "RS101", points: 90 },
+          { _id: "A3", title: "Nozzle Design Project", course: "RS101", points: 120 },
+        ]
+      : (db.assignments as Assignment[]);
 
   const defaultDescription = `The assignment is available online.
 
