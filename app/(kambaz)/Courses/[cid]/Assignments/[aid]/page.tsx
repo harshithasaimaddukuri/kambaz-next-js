@@ -1,12 +1,21 @@
-"use client"
+"use client";
 import { Form, Button, Row, Col, Card, FormGroup } from "react-bootstrap";
-import * as db from "../../../../Database"
+import * as db from "../../../../Database";
 import { useParams } from "next/navigation";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  points: number;
+  due?: string;
+  available?: string;
+  course: string;
+}
+
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
-  const amts = db.assignments;
-  
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
+  const amts: Assignment[] = db.assignments as Assignment[];
+
   const defaultDescription = `The assignment is available online.
 
 Submit a link to the landing page of your Web application running on Netlify.
@@ -22,20 +31,15 @@ The Kanbas application should include a link to navigate back to the landing pag
   return (
     <>
       {amts
-        .filter((amt: any) => amt.course === cid)
-        .filter((amt: any) => amt._id === aid)
-        .map((crsAmt: any) => (
+        .filter((amt) => amt.course === cid)
+        .filter((amt) => amt._id === aid)
+        .map((crsAmt) => (
           <div key={crsAmt._id} id="wd-assignments-editor" className="container mt-4">
             <Row className="mb-3">
               <Col>
                 <FormGroup>
                   <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="wd-name"
-                    defaultValue={crsAmt?.title}
-                    size="lg"
-                  />
+                  <Form.Control type="text" id="wd-name" defaultValue={crsAmt.title} size="lg" />
                 </FormGroup>
               </Col>
             </Row>
@@ -58,11 +62,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                 <Form.Label htmlFor="wd-points">Points</Form.Label>
               </Col>
               <Col md={9}>
-                <Form.Control
-                  type="number"
-                  id="wd-points"
-                  defaultValue={crsAmt?.points}
-                />
+                <Form.Control type="number" id="wd-points" defaultValue={crsAmt.points} />
               </Col>
             </Row>
 
@@ -136,7 +136,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                         <Form.Control
                           type="datetime-local"
                           id="wd-due-date"
-                          defaultValue={crsAmt?.due ? `${crsAmt.due}T23:59` : ""}
+                          defaultValue={crsAmt.due ? `${crsAmt.due}T23:59` : ""}
                         />
                       </Form.Group>
                     </Col>
@@ -149,7 +149,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                         <Form.Control
                           type="datetime-local"
                           id="wd-available-from"
-                          defaultValue={crsAmt?.available ? `${crsAmt.available}T00:00` : ""}
+                          defaultValue={crsAmt.available ? `${crsAmt.available}T00:00` : ""}
                         />
                       </Form.Group>
                     </Col>
@@ -159,7 +159,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                         <Form.Control
                           type="datetime-local"
                           id="wd-available-until"
-                          defaultValue={crsAmt?.due ? `${crsAmt.due}T23:59` : ""}
+                          defaultValue={crsAmt.due ? `${crsAmt.due}T23:59` : ""}
                         />
                       </Form.Group>
                     </Col>
@@ -167,8 +167,6 @@ The Kanbas application should include a link to navigate back to the landing pag
                 </Card>
               </Col>
             </Row>
-
-            
 
             <hr />
 

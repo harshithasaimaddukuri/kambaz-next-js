@@ -1,26 +1,28 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { ListGroup, ListGroupItem, Button, Form } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { IoEllipsisVertical, IoChevronDown } from "react-icons/io5";
 import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
-import * as db from "../../../Database"
+import * as db from "../../../Database";
 import { useParams } from "next/navigation";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  points: number;
+}
+
 export default function Assignments() {
-  const { aid, cid } = useParams();
-  const amts = db.assignments;
-  
-  const formatAssignmentId = (id: string) => {
-    if (id === "A101") return "A1";
-    if (id === "A102") return "A2"; 
-    if (id === "A103") return "A3";
-    return id.replace(/^A0*/, "A");
-  };
+  const { cid } = useParams<{ cid: string }>();
+  const amts: Assignment[] = db.assignments as Assignment[];
+
+  const formatAssignmentId = (id: string) => id.replace(/^A0*/, "A");
 
   const getAssignmentDates = (assignmentId: string) => {
-    switch(assignmentId) {
+    switch (assignmentId) {
       case "A101":
       case "A201":
       case "A301":
@@ -79,8 +81,8 @@ export default function Assignments() {
 
           <ListGroup className="rounded-0">
             {amts
-              .filter((amt: any) => amt.course === cid)
-              .map((crsAmt: any) => {
+              .filter((amt) => amt.course === cid)
+              .map((crsAmt) => {
                 const dates = getAssignmentDates(crsAmt._id);
                 return (
                   <ListGroupItem
@@ -91,20 +93,24 @@ export default function Assignments() {
                     <FaFileAlt className="me-2 mt-1 text-success" />
                     <div className="flex-grow-1">
                       <Link
-                        href={`/Courses/${crsAmt?.course}/Assignments/${crsAmt?._id}`}
+                        href={`/Courses/${crsAmt.course}/Assignments/${crsAmt._id}`}
                         className="text-decoration-none"
                       >
                         <strong className="text-dark">{formatAssignmentId(crsAmt._id)}</strong>
                       </Link>
                       <div className="text-muted small mt-1">
-                        <span className="text-danger">{crsAmt?.title}</span>
+                        <span className="text-danger">{crsAmt.title}</span>
                         <span className="mx-1">|</span>
-                        <span><strong>Not available until</strong> {dates.available}</span>
+                        <span>
+                          <strong>Not available until</strong> {dates.available}
+                        </span>
                         <span className="mx-1">|</span>
                         <br />
-                        <span><strong>Due</strong> {dates.due}</span>
+                        <span>
+                          <strong>Due</strong> {dates.due}
+                        </span>
                         <span className="mx-1">|</span>
-                        <span>{crsAmt?.points} pts</span>
+                        <span>{crsAmt.points} pts</span>
                       </div>
                     </div>
                     <div className="d-flex align-items-center">
