@@ -1,106 +1,122 @@
-"use client";
+"use client"
 import Link from "next/link";
-import { FaPlus, FaCheckCircle, FaSearch } from "react-icons/fa";
+import { ListGroup, ListGroupItem, Button, Form } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import { IoMdArrowDropdown } from "react-icons/io";
-import { IoEllipsisVertical } from "react-icons/io5";
-import { LuFile } from "react-icons/lu";
+import { FaPlus } from "react-icons/fa6";
+import { IoEllipsisVertical, IoChevronDown } from "react-icons/io5";
+import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
+import * as db from "../../../Database"
+import { useParams } from "next/navigation";
 
 export default function Assignments() {
-  const assignments = [
-    {
-      id: 123,
-      title: "A1",
-      availability: "May 6 at 12:00am",
-      due: "May 13 at 11:59pm",
-      points: 100,
-    },
-    {
-      id: 124,
-      title: "A2",
-      availability: "May 13 at 12:00am",
-      due: "May 20 at 11:59pm",
-      points: 100,
-    },
-    {
-      id: 125,
-      title: "A3",
-      availability: "May 20 at 12:00am",
-      due: "May 27 at 11:59pm",
-      points: 100,
-    },
-  ];
+  const { aid, cid } = useParams();
+  const amts = db.assignments;
+  
+  const formatAssignmentId = (id: string) => {
+    if (id === "A101") return "A1";
+    if (id === "A102") return "A2"; 
+    if (id === "A103") return "A3";
+    return id.replace(/^A0*/, "A");
+  };
+
+  const getAssignmentDates = (assignmentId: string) => {
+    switch(assignmentId) {
+      case "A101":
+      case "A201":
+      case "A301":
+        return { available: "May 6 at 12:00am", due: "May 13 at 11:59pm" };
+      case "A102":
+      case "A202":
+      case "A302":
+        return { available: "May 13 at 12:00am", due: "May 20 at 11:59pm" };
+      case "A103":
+      case "A203":
+      case "A303":
+        return { available: "May 20 at 12:00am", due: "May 27 at 11:59pm" };
+      default:
+        return { available: "May 6 at 12:00am", due: "May 13 at 11:59pm" };
+    }
+  };
 
   return (
-    <div id="wd-assignments" className="p-4">
-
-      <div className="row mb-4 align-items-center">
-        <div className="col-md-6">
-          <div className="input-group">
-            <span className="input-group-text bg-white">
-              <FaSearch />
-            </span>
-            <input type="text" className="form-control" placeholder="Search... "/>
-          </div>
-        </div>
-        <div className="col-md-6 text-end">
-          <button className="btn btn-secondary me-2">
-            <FaPlus className="me-1" /> Group
-          </button>
-          <button className="btn btn-danger">
-            <FaPlus className="me-1" /> Assignment
-          </button>
-        </div>
-      </div>
-
-      <div className="d-flex justify-content-between align-items-center p-2 rounded" style={{ backgroundColor: "#f5f5f5" }}>
-        <div className="d-flex align-items-center">
-          <BsGripVertical className="me-2 text-muted" />
-          <IoMdArrowDropdown className="me-2 text-muted" />
-          <strong>ASSIGNMENTS</strong>
-        </div>
-        <div className="d-flex align-items-center">
-          <span className="badge rounded-pill bg-secondary border text-dark me-2">40% of Total</span>
-          <button className="btn btn-outline-secondary btn-sm me-2">
-            <FaPlus />
-          </button>
-          <IoEllipsisVertical className="fs-5" />
+    <div id="wd-assignments">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <Form.Control
+          type="text"
+          placeholder="Search for Assignments"
+          id="wd-search-assignment"
+          className="me-2"
+          style={{ maxWidth: "300px" }}
+        />
+        <div>
+          <Button variant="secondary" size="lg" className="me-2" id="wd-add-assignment-group">
+            <FaPlus className="me-2" />
+            Group
+          </Button>
+          <Button variant="danger" size="lg" id="wd-add-assignment">
+            <FaPlus className="me-2" />
+            Assignment
+          </Button>
         </div>
       </div>
 
-      <ul className="list-unstyled mt-2">
-        {assignments.map((assignment) => (
-          <li key={assignment.id} className="border-start border-success border-4 bg-white rounded mb-2 p-3">
-            <div className="d-flex justify-content-between align-items-start">
-              <div className="d-flex align-items-start flex-grow-1">
-                <BsGripVertical className="me-2 text-muted" />
-                <LuFile className="me-2 text-success fs-4" />
-                <div className="flex-grow-1">
-                  <Link
-                    href={`/Courses/1234/Assignments/${assignment.id}`}
-                    className="text-dark text-decoration-none fw-bold"
-                  >
-                    {assignment.title}
-                  </Link>
-                  <div className="text-muted small mt-1">
-                    <span className="text-danger">Multiple Modules</span>
-                    {" | "}
-                    <strong>Not available until</strong> {assignment.availability}
-                    {" | "}
-                    <strong>Due</strong> {assignment.due}
-                    {" | "}
-                    {assignment.points} pts
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex align-items-center ms-3">
-                <FaCheckCircle className="text-success me-2 fs-5" />
-                <IoEllipsisVertical />
-              </div>
+      <ListGroup className="rounded-0">
+        <ListGroupItem className="wd-assignment-group p-0 mb-0 fs-5 border-gray">
+          <div className="wd-assignment-header p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center">
+              <BsGripVertical className="me-2 fs-3" />
+              <IoChevronDown className="me-2" />
+              <span className="fw-bold">ASSIGNMENTS</span>
             </div>
-          </li>
-        ))}
-      </ul>
+            <div className="d-flex align-items-center">
+              <span className="wd-assignment-percentage me-3 border border-dark rounded-pill px-3 py-1 bg-gray text-dark">
+                40% of Total
+              </span>
+              <FaPlus className="fs-4 me-2" />
+              <IoEllipsisVertical className="fs-4" />
+            </div>
+          </div>
+
+          <ListGroup className="rounded-0">
+            {amts
+              .filter((amt: any) => amt.course === cid)
+              .map((crsAmt: any) => {
+                const dates = getAssignmentDates(crsAmt._id);
+                return (
+                  <ListGroupItem
+                    key={crsAmt._id}
+                    className="wd-assignment-item p-3 ps-1 d-flex align-items-start"
+                  >
+                    <BsGripVertical className="me-2 fs-3 mt-1" />
+                    <FaFileAlt className="me-2 mt-1 text-success" />
+                    <div className="flex-grow-1">
+                      <Link
+                        href={`/Courses/${crsAmt?.course}/Assignments/${crsAmt?._id}`}
+                        className="text-decoration-none"
+                      >
+                        <strong className="text-dark">{formatAssignmentId(crsAmt._id)}</strong>
+                      </Link>
+                      <div className="text-muted small mt-1">
+                        <span className="text-danger">{crsAmt?.title}</span>
+                        <span className="mx-1">|</span>
+                        <span><strong>Not available until</strong> {dates.available}</span>
+                        <span className="mx-1">|</span>
+                        <br />
+                        <span><strong>Due</strong> {dates.due}</span>
+                        <span className="mx-1">|</span>
+                        <span>{crsAmt?.points} pts</span>
+                      </div>
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <FaCheckCircle className="text-success me-2" />
+                      <IoEllipsisVertical className="fs-4" />
+                    </div>
+                  </ListGroupItem>
+                );
+              })}
+          </ListGroup>
+        </ListGroupItem>
+      </ListGroup>
     </div>
   );
 }

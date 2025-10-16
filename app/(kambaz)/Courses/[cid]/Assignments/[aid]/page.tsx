@@ -1,138 +1,183 @@
+"use client"
+import { Form, Button, Row, Col, Card, FormGroup } from "react-bootstrap";
+import * as db from "../../../../Database"
+import { useParams } from "next/navigation";
+
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const amts = db.assignments;
+  
+  const defaultDescription = `The assignment is available online.
+
+Submit a link to the landing page of your Web application running on Netlify.
+
+The landing page should include the following:
+• Your full name and section
+• Links to each of the lab assignments
+• Link to the Kanbas application
+• Links to all relevant source code repositories
+
+The Kanbas application should include a link to navigate back to the landing page.`;
+
   return (
-    <div id="wd-assignments-editor" className="container-fluid p-4">
+    <>
+      {amts
+        .filter((amt: any) => amt.course === cid)
+        .filter((amt: any) => amt._id === aid)
+        .map((crsAmt: any) => (
+          <div key={crsAmt._id} id="wd-assignments-editor" className="container mt-4">
+            <Row className="mb-3">
+              <Col>
+                <FormGroup>
+                  <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    id="wd-name"
+                    defaultValue={crsAmt?.title}
+                    size="lg"
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
 
-      <div className="mb-3">
-        <label htmlFor="wd-name" className="form-label">Assignment Name</label>
-        <input id="wd-name" className="form-control" defaultValue="A1" />
-      </div>
+            <Row className="mb-3">
+              <Col>
+                <Form.Group>
+                  <Form.Control
+                    as="textarea"
+                    id="wd-description"
+                    rows={8}
+                    defaultValue={defaultDescription}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
-      <div className="mb-3">
-        <div className="border rounded p-3">
-          <p>The assignment is <span className="text-danger">available online</span>.</p>
-          <p>Submit a link to the landing page of your Web application running on Netlify.</p>
-          <p>The landing page should include the following:</p>
-          <ul>
-            <li>Your full name and section</li>
-            <li>Links to each of the lab assignments</li>
-            <li>Link to the Kanbas application</li>
-            <li>Links to all relevant source code repositories</li>
-          </ul>
-          <p>The Kanbas application should include a link to navigate back to the landing page.</p>
-        </div>
-      </div>
+            <Row className="mb-3">
+              <Col md={3} className="text-md-end">
+                <Form.Label htmlFor="wd-points">Points</Form.Label>
+              </Col>
+              <Col md={9}>
+                <Form.Control
+                  type="number"
+                  id="wd-points"
+                  defaultValue={crsAmt?.points}
+                />
+              </Col>
+            </Row>
 
-      <div className="row mb-3">
-        <div className="col-md-3 text-end">
-          <label htmlFor="wd-points" className="form-label">Points</label>
-        </div>
-        <div className="col-md-9">
-          <input id="wd-points" className="form-control" type="number" defaultValue={100} />
-        </div>
-      </div>
+            <Row className="mb-3">
+              <Col md={3} className="text-md-end">
+                <Form.Label htmlFor="wd-group">Assignment Group</Form.Label>
+              </Col>
+              <Col md={9}>
+                <Form.Select id="wd-group" defaultValue="ASSIGNMENTS">
+                  <option value="ASSIGNMENTS">Assignment Group</option>
+                  <option value="QUIZZES">QUIZZES</option>
+                  <option value="EXAMS">EXAMS</option>
+                  <option value="PROJECT">PROJECT</option>
+                </Form.Select>
+              </Col>
+            </Row>
 
+            <Row className="mb-3">
+              <Col md={3} className="text-md-end">
+                <Form.Label htmlFor="wd-display-grade-as">Display Grade as</Form.Label>
+              </Col>
+              <Col md={9}>
+                <Form.Select id="wd-display-grade-as" defaultValue="Percentage">
+                  <option>Percentage</option>
+                  <option>Points</option>
+                </Form.Select>
+              </Col>
+            </Row>
 
-      <div className="row mb-3">
-        <div className="col-md-3 text-end">
-          <label htmlFor="wd-group" className="form-label">Assignment Group</label>
-        </div>
-        <div className="col-md-9">
-          <select id="wd-group" className="form-select" defaultValue="ASSIGNMENTS">
-            <option>ASSIGNMENTS</option>
-            <option>QUIZZES</option>
-            <option>EXAMS</option>
-            <option>PROJECTS</option>
-          </select>
-        </div>
-      </div>
+            <Row className="mb-3">
+              <Col md={3} className="text-md-end">
+                <Form.Label htmlFor="wd-submission-type">Submission Type</Form.Label>
+              </Col>
+              <Col md={9}>
+                <Card className="p-3">
+                  <Form.Select id="wd-submission-type" className="mb-3" defaultValue="Online">
+                    <option>Online</option>
+                    <option>On Paper</option>
+                    <option>External Tool</option>
+                  </Form.Select>
 
-      <div className="row mb-3">
-        <div className="col-md-3 text-end">
-          <label htmlFor="wd-display-grade-as" className="form-label">Display Grade as</label>
-        </div>
-        <div className="col-md-9">
-          <select id="wd-display-grade-as" className="form-select" defaultValue="Percentage">
-            <option>Percentage</option>
-            <option>Points</option>
-            <option>Letter Grade</option>
-            <option>Complete/Incomplete</option>
-          </select>
-        </div>
-      </div>
+                  <div>
+                    <Form.Label className="fw-bold">Online Entry Options</Form.Label>
+                    <Form.Check type="checkbox" id="wd-text-entry" label="Text Entry" defaultChecked className="mb-2" />
+                    <Form.Check type="checkbox" id="wd-website-url" label="Website URL" defaultChecked className="mb-2" />
+                    <Form.Check type="checkbox" id="wd-media-recordings" label="Media Recordings" className="mb-2" />
+                    <Form.Check type="checkbox" id="wd-student-annotation" label="Student Annotation" className="mb-2" />
+                    <Form.Check type="checkbox" id="wd-file-upload" label="File Uploads" />
+                  </div>
+                </Card>
+              </Col>
+            </Row>
 
-      <div className="row mb-3">
-        <div className="col-md-3 text-end">
-          <label className="form-label">Submission Type</label>
-        </div>
-        <div className="col-md-9">
-          <div className="border rounded p-3">
-            <select id="wd-submission-type" className="form-select mb-3" defaultValue="Online">
-              <option>Online</option>
-              <option>On Paper</option>
-              <option>No Submission</option>
-            </select>
+            <Row className="mb-3">
+              <Col md={3} className="text-md-end">
+                <Form.Label>Assign</Form.Label>
+              </Col>
+              <Col md={9}>
+                <Card className="p-3">
+                  <Form.Group className="mb-3">
+                    <Form.Label htmlFor="wd-assign-to">Assign to</Form.Label>
+                    <div className="wd-assign-to-container">
+                      <span className="wd-assign-tag">Everyone <button className="wd-remove-tag">×</button></span>
+                    </div>
+                  </Form.Group>
 
-            <div className="mb-2"><strong>Online Entry Options</strong></div>
+                  <Row>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label htmlFor="wd-due-date">Due</Form.Label>
+                        <Form.Control
+                          type="datetime-local"
+                          id="wd-due-date"
+                          defaultValue={crsAmt?.due ? `${crsAmt.due}T23:59` : ""}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-            <div className="form-check mb-2">
-              <input type="checkbox" id="wd-text-entry" className="form-check-input" />
-              <label htmlFor="wd-text-entry" className="form-check-label">Text Entry</label>
-            </div>
+                  <Row className="mt-3">
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label htmlFor="wd-available-from">Available From</Form.Label>
+                        <Form.Control
+                          type="datetime-local"
+                          id="wd-available-from"
+                          defaultValue={crsAmt?.available ? `${crsAmt.available}T00:00` : ""}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label htmlFor="wd-available-until">Until</Form.Label>
+                        <Form.Control
+                          type="datetime-local"
+                          id="wd-available-until"
+                          defaultValue={crsAmt?.due ? `${crsAmt.due}T23:59` : ""}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
 
-            <div className="form-check mb-2">
-              <input type="checkbox" id="wd-website-url" className="form-check-input" defaultChecked />
-              <label htmlFor="wd-website-url" className="form-check-label">Website URL</label>
-            </div>
+            
 
-            <div className="form-check mb-2">
-              <input type="checkbox" id="wd-media-recordings" className="form-check-input" />
-              <label htmlFor="wd-media-recordings" className="form-check-label">Media Recordings</label>
-            </div>
+            <hr />
 
-            <div className="form-check mb-2">
-              <input type="checkbox" id="wd-student-annotation" className="form-check-input" />
-              <label htmlFor="wd-student-annotation" className="form-check-label">Student Annotation</label>
-            </div>
-
-            <div className="form-check">
-              <input type="checkbox" id="wd-file-upload" className="form-check-input" />
-              <label htmlFor="wd-file-upload" className="form-check-label">File Uploads</label>
+            <div className="d-flex justify-content-end gap-2 mb-4">
+              <Button variant="secondary">Save</Button>
+              <Button variant="danger">Cancel</Button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="row mb-3">
-        <div className="col-md-3 text-end">
-          <label className="form-label">Assign</label>
-        </div>
-        <div className="col-md-9">
-          <div className="border rounded p-3">
-            <label htmlFor="wd-assign-to" className="form-label"><strong>Assign to</strong></label>
-            <input id="wd-assign-to" className="form-control mb-3" defaultValue="Everyone" />
-
-            <label htmlFor="wd-due-date" className="form-label"><strong>Due</strong></label>
-            <input id="wd-due-date" type="date" className="form-control mb-3" defaultValue="2024-05-13" />
-
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label htmlFor="wd-available-from" className="form-label"><strong>Available from</strong></label>
-                <input id="wd-available-from" type="date" className="form-control" defaultValue="2024-05-06" />
-              </div>
-              <div className="col-md-6 mb-3">
-                <label htmlFor="wd-available-until" className="form-label"><strong>Until</strong></label>
-                <input id="wd-available-until" type="date" className="form-control" defaultValue="2024-05-20" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr />
-      <div className="d-flex justify-content-end gap-2 mb-3">
-        <button className="btn btn-secondary">Cancel</button>
-        <button className="btn btn-danger">Save</button>
-      </div>
-    </div>
+        ))}
+    </>
   );
 }
