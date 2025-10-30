@@ -19,18 +19,20 @@ interface ModulesState {
   modules: Module[];
 }
 
-// Normalize initialModules
-const initialModules: Module[] = initialModulesData.map((m) => ({
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
+const initialModules: Module[] = (initialModulesData as any[]).map((m) => ({
   _id: m._id,
   name: m.name,
   course: m.course,
-  lessons: m.lessons
-    ? m.lessons.map((l) => ({
+  lessons: Array.isArray(m.lessons) 
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? m.lessons.map((l: any) => ({
         _id: l._id,
         name: l.name,
       }))
     : [],
-  editing: m.editing || false,
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editing: (m as any).editing || false, 
 }));
 
 const initialState: ModulesState = {
