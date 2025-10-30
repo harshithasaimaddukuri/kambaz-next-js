@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { modules as initialModules } from "../../../Database";
+import { modules as initialModulesData } from "../../../Database";
 import { v4 as uuidv4 } from "uuid";
+
+interface Lesson {
+  _id: string;
+  name: string;
+}
 
 interface Module {
   _id: string;
@@ -10,14 +15,23 @@ interface Module {
   editing?: boolean;
 }
 
-interface Lesson {
-  _id: string;
-  name: string;
-}
-
 interface ModulesState {
   modules: Module[];
 }
+
+// Normalize initialModules
+const initialModules: Module[] = initialModulesData.map((m) => ({
+  _id: m._id,
+  name: m.name,
+  course: m.course,
+  lessons: m.lessons
+    ? m.lessons.map((l) => ({
+        _id: l._id,
+        name: l.name,
+      }))
+    : [],
+  editing: m.editing || false,
+}));
 
 const initialState: ModulesState = {
   modules: initialModules,
@@ -37,6 +51,7 @@ const modulesSlice = createSlice({
         name: action.payload.name,
         course: action.payload.course,
         lessons: [],
+        editing: false,
       };
       state.modules.push(newModule);
     },
