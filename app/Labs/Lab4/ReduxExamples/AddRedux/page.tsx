@@ -4,11 +4,13 @@ import { useState } from "react";
 import { add } from "./addReducer";
 import { FormControl, Button } from "react-bootstrap";
 
+export const dynamic = "force-dynamic";
+
 export default function AddRedux() {
   const [a, setA] = useState(12);
   const [b, setB] = useState(23);
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { sum } = useSelector((state: any) => state.addReducer);
+  const { sum } = useSelector((state?: any) => state.addReducer??{});
   const dispatch = useDispatch();
   return (
     <div className="w-25" id="wd-add-redux">
