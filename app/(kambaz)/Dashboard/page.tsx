@@ -60,7 +60,7 @@ export default function Dashboard() {
         {courses.map((c: any) => (
           <Col key={c._id}>
             <Card className="h-100">
-              <Link href={`/Kambaz/Courses/${c._id}/Home`} className="text-decoration-none text-dark">
+              <Link href={`/Courses/${c._id}/Home`} className="text-decoration-none text-dark">
                 <CardImg
                   src={c.image}
                   variant="top"

@@ -1,34 +1,46 @@
 "use client";
 import { ReactNode, useState } from "react";
+import { FaAlignJustify } from "react-icons/fa6";
+import Breadcrumb from "./Breadcrumb";
+import CoursesNavigation from "./Navigation";
 import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
-import { FaAlignJustify } from "react-icons/fa6";
-import CourseNavigation from "./Navigation";
 
 export default function CoursesLayout({ children }: { children: ReactNode }) {
-  const { cid } = useParams();
+  const { cid } = useParams<{ cid: string }>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { courses } = useSelector((state: any) => state.coursesReducer);
-  const course = courses.find((c: any) => c._id === cid);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const course = courses.find((course: any) => course._id === cid);
+  const [isNavVisible, setIsNavVisible] = useState(true);
 
   return (
-    <div id="wd-courses" className="p-4">
-      <h2 className="text-danger d-flex align-items-center">
+    <div id="wd-courses">
+      <h2 className="text-danger">
         <FaAlignJustify 
           className="me-4 fs-4 mb-1" 
           style={{ cursor: "pointer" }}
-          onClick={() => setSidebarVisible(!sidebarVisible)} 
+          onClick={() => setIsNavVisible(!isNavVisible)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setIsNavVisible(!isNavVisible);
+            }
+          }}
         />
-        {course?.name || "Course Not Found"}
+        {course?.name} &gt; <Breadcrumb course={course} />
       </h2>
       <hr />
       <div className="d-flex">
-        {sidebarVisible && (
-          <div className="me-4" style={{ minWidth: "250px" }}>
-            <CourseNavigation />
+        {isNavVisible && (
+          <div className="d-none d-md-block">
+            <CoursesNavigation />
           </div>
         )}
-        <div className="flex-fill">{children}</div>
+        <div className="flex-fill">
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-"use client";
 import { Modal, FormControl, Button } from "react-bootstrap";
 
 export default function ModuleEditor({

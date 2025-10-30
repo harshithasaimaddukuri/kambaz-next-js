@@ -38,6 +38,7 @@ export default function ModulesControls({
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
         Module
       </Button>
+
       <Dropdown className="float-end me-2">
         <DropdownToggle variant="secondary" size="lg" id="wd-publish-all-btn">
           <GreenCheckmark /> Publish All
@@ -61,6 +62,7 @@ export default function ModulesControls({
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
+
       <Button
         variant="secondary"
         size="lg"
@@ -69,6 +71,7 @@ export default function ModulesControls({
       >
         View Progress
       </Button>
+
       <Button
         variant="secondary"
         size="lg"
@@ -77,6 +80,7 @@ export default function ModulesControls({
       >
         Collapse All
       </Button>
+
       <ModuleEditor
         show={show}
         handleClose={handleClose}
