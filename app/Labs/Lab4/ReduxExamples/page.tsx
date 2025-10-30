@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import HelloRedux from "./HelloRedux";
 import CounterRedux from "./CounterRedux";
