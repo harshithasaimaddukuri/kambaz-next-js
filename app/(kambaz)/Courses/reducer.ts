@@ -14,7 +14,7 @@ const coursesSlice = createSlice({
     },
     deleteCourse: (state, { payload: courseId }) => {
       state.courses = state.courses.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         (c: any) => c._id !== courseId
       );
     },
