@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-sum: 0,
+  sum: 0,
 };
 const addSlice = createSlice({
-name: "addReducer",
-initialState,
-reducers: {
-add: (state, action) => {
-state.sum = action.payload.a + action.payload.b;
+  name: "add",
+  initialState,
+  reducers: {
+    add: (state, action) => {
+      state.sum = action.payload.a + action.payload.b;
     },
   },
 });
