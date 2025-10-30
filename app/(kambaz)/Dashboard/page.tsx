@@ -1,6 +1,7 @@
 //disable eslint for this file
 
 "use client";
+
 import { useState, ChangeEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
