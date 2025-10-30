@@ -1,9 +1,10 @@
 "use client"
+export const dynamic = "force-dynamic";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { add } from "./addReducer";
 import { FormControl, Button } from "react-bootstrap";
-export const dynamic = "force-dynamic";
+
 export default function AddRedux() {
 const [mounted, setMounted] = useState(false);
 const [a, setA] = useState(12);
