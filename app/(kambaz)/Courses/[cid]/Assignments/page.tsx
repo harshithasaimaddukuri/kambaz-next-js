@@ -1,49 +1,86 @@
 "use client";
 import Link from "next/link";
-import { ListGroup, ListGroupItem, Button, Form } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Button, Form, Modal } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaTrash } from "react-icons/fa6";
 import { IoEllipsisVertical, IoChevronDown } from "react-icons/io5";
 import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
+import { useParams, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAssignment, Assignment } from "./reducer";
+import { useState } from "react";
 import * as db from "../../../Database";
-import { useParams } from "next/navigation";
 
-interface Assignment {
-  _id: string;
-  title: string;
-  course: string;
-  points: number;
+interface RootState {
+  assignmentsReducer?: {
+    assignments: Assignment[];
+  };
 }
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
-  const amts: Assignment[] = db.assignments as Assignment[];
+  const router = useRouter();
+  const dispatch = useDispatch();
+  
+  const storeAssignments = useSelector((state: RootState) => 
+    state.assignmentsReducer?.assignments
+  );
+  
+  const assignments: Assignment[] = storeAssignments || (db.assignments as Assignment[]);
+  
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
 
-  const propulsionAssignments: Assignment[] = [
-    { _id: "A1", title: "Propulsion Assignment", course: cid!, points: 100 },
-    { _id: "A2", title: "Combustion Analysis", course: cid!, points: 90 },
-    { _id: "A3", title: "Nozzle Design Project", course: cid!, points: 120 },
-  ];
+  const courseAssignments = assignments.filter((amt) => amt.course === cid);
 
   const formatAssignmentId = (id: string) => id.replace(/^A0*/, "A");
 
-  const getAssignmentDates = (assignmentId: string) => {
-    switch (assignmentId) {
-      case "A1":
-        return { available: "May 6 at 12:00am", due: "May 13 at 11:59pm" };
-      case "A2":
-        return { available: "May 13 at 12:00am", due: "May 20 at 11:59pm" };
-      case "A3":
-        return { available: "May 20 at 12:00am", due: "May 27 at 11:59pm" };
-      default:
-        return { available: "May 6 at 12:00am", due: "May 13 at 11:59pm" };
-    }
+  const getAssignmentDates = (assignment: Assignment) => {
+    const available = assignment.available 
+      ? new Date(assignment.available).toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true 
+        })
+      : "May 6 at 12:00am";
+    
+    const due = assignment.due
+      ? new Date(assignment.due).toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true 
+        })
+      : "May 13 at 11:59pm";
+    
+    return { available, due };
   };
 
-  const courseAssignments =
-    cid === "RS101" 
-      ? propulsionAssignments
-      : amts.filter((amt) => amt.course === cid);
+  const handleDeleteClick = (assignmentId: string) => {
+    setAssignmentToDelete(assignmentId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (assignmentToDelete) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      dispatch(deleteAssignment(assignmentToDelete) as any);
+    }
+    setShowDeleteModal(false);
+    setAssignmentToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setAssignmentToDelete(null);
+  };
+
+  const handleAddAssignment = () => {
+    router.push(`/Courses/${cid}/Assignments/new`);
+  };
 
   return (
     <div id="wd-assignments">
@@ -65,7 +102,12 @@ export default function Assignments() {
             <FaPlus className="me-2" />
             Group
           </Button>
-          <Button variant="danger" size="lg" id="wd-add-assignment">
+          <Button 
+            variant="danger" 
+            size="lg" 
+            id="wd-add-assignment"
+            onClick={handleAddAssignment}
+          >
             <FaPlus className="me-2" />
             Assignment
           </Button>
@@ -90,26 +132,26 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="rounded-0">
-            {courseAssignments.map((crsAmt) => {
-              const dates = getAssignmentDates(crsAmt._id);
+            {courseAssignments.map((assignment) => {
+              const dates = getAssignmentDates(assignment);
               return (
                 <ListGroupItem
-                  key={crsAmt._id}
+                  key={assignment._id}
                   className="wd-assignment-item p-3 ps-1 d-flex align-items-start"
                 >
                   <BsGripVertical className="me-2 fs-3 mt-1" />
                   <FaFileAlt className="me-2 mt-1 text-success" />
                   <div className="flex-grow-1">
                     <Link
-                      href={`/Courses/${cid}/Assignments/${crsAmt._id}`}
+                      href={`/Courses/${cid}/Assignments/${assignment._id}`}
                       className="text-decoration-none"
                     >
                       <strong className="text-dark">
-                        {formatAssignmentId(crsAmt._id)}
+                        {formatAssignmentId(assignment._id)}
                       </strong>
                     </Link>
                     <div className="text-muted small mt-1">
-                      <span className="text-danger">{crsAmt.title}</span>
+                      <span className="text-danger">{assignment.title}</span>
                       <span className="mx-1">|</span>
                       <span>
                         <strong>Not available until</strong> {dates.available}
@@ -120,11 +162,21 @@ export default function Assignments() {
                         <strong>Due</strong> {dates.due}
                       </span>
                       <span className="mx-1">|</span>
-                      <span>{crsAmt.points} pts</span>
+                      <span>{assignment.points} pts</span>
                     </div>
                   </div>
                   <div className="d-flex align-items-center">
                     <FaCheckCircle className="text-success me-2" />
+                    <Button
+                      variant="link"
+                      className="text-danger p-0 me-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteClick(assignment._id);
+                      }}
+                    >
+                      <FaTrash />
+                    </Button>
                     <IoEllipsisVertical className="fs-4" />
                   </div>
                 </ListGroupItem>
@@ -133,6 +185,23 @@ export default function Assignments() {
           </ListGroup>
         </ListGroupItem>
       </ListGroup>
+
+      <Modal show={showDeleteModal} onHide={cancelDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Assignment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove this assignment?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

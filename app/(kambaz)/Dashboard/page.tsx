@@ -1,14 +1,20 @@
-//disable eslint for this file
-
+//eslint-disable-whole-file
 "use client";
-
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
-import { FormControl } from "react-bootstrap";
-import { v4 as uuidv4 } from "uuid";
-import Link from "next/link";
-import Image from "next/image";
+import { 
+  Row, 
+  Col, 
+  Card, 
+  CardImg, 
+  CardBody, 
+  CardTitle, 
+  CardText, 
+  Button,
+  Form 
+} from "react-bootstrap";
 
 interface Course {
   _id: string;
@@ -20,109 +26,138 @@ interface Course {
   description: string;
 }
 
+interface CoursesState {
+  courses: Course[];
+}
+
 interface RootState {
-  coursesReducer: {
-    courses: Course[];
-  };
+  coursesReducer: CoursesState;
 }
 
 export default function Dashboard() {
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
   const dispatch = useDispatch();
-
-  const courses: Course[] = useSelector((state: RootState) => state.coursesReducer.courses);
-
+  
   const [course, setCourse] = useState<Course>({
-    _id: uuidv4(),
+    _id: "0",
     name: "New Course",
     number: "New Number",
     startDate: "2023-09-10",
     endDate: "2023-12-15",
     image: "/images/reactjs.jpg",
-    description: "New Description",
+    description: "New Description"
   });
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setCourse({ ...course, [name]: value });
-  };
 
   return (
     <div id="wd-dashboard" className="p-4">
-      <h1>Dashboard</h1>
+      <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
-
+      
       <h5>
         New Course
-        <button
+        <Button 
           className="btn btn-primary float-end"
-          onClick={() => dispatch(addNewCourse({ ...course, _id: uuidv4() }))}
+          id="wd-add-new-course-click"
+          //eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onClick={() => dispatch(addNewCourse(course) as any)}
         >
           Add
-        </button>
-        <button
+        </Button>
+        <Button 
           className="btn btn-warning float-end me-2"
-          onClick={() => dispatch(updateCourse(course))}
+          id="wd-update-course-click"
+          //eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onClick={() => dispatch(updateCourse(course) as any)}
         >
           Update
-        </button>
+        </Button>
       </h5>
-
-      <FormControl
-        name="name"
+      <br />
+      
+      <Form.Control 
+        type="text"
         value={course.name}
         className="mb-2"
-        onChange={handleInputChange}
         placeholder="Course Name"
+        onChange={(e) => setCourse({ ...course, name: e.target.value })}
       />
-      <FormControl
+      <Form.Control 
         as="textarea"
-        name="description"
         value={course.description}
-        onChange={handleInputChange}
+        rows={3}
         placeholder="Course Description"
-        className="mb-2"
+        onChange={(e) => setCourse({ ...course, description: e.target.value })}
       />
-
+      
       <hr />
-      <div className="row row-cols-1 row-cols-md-5 g-4">
-        {courses.map((c: Course) => ( 
-          <div key={c._id} className="col">
-            <div className="card">
-              <Image
-                src={c.image}
-                alt={c.name}
-                width={300}
-                height={200}
-                className="card-img-top"
-              />
-              <div className="card-body">
-                <h5 className="card-title">{c.name}</h5>
-                <p className="card-text">{c.description}</p>
-                <Link href={`/Kambaz/Courses/${c._id}`}>
-                  <button className="btn btn-primary">Go</button>
+      
+      <h2 id="wd-dashboard-published">
+        Published Courses ({courses.length})
+      </h2>
+      <hr />
+      
+      <div id="wd-dashboard-courses">
+        <Row xs={1} md={5} className="g-4">
+          {courses.map((course: Course) => (
+            <Col 
+              key={course._id} 
+              className="wd-dashboard-course" 
+              style={{ width: "300px" }}
+            >
+              <Card>
+                <Link
+                  href={`/Courses/${course._id}/Home`}
+                  className="wd-dashboard-course-link text-decoration-none text-dark"
+                >
+                  <CardImg 
+                    src={course.image || "/images/reactjs.jpg"} 
+                    variant="top" 
+                    width="100%" 
+                    height={160} 
+                  />
+                  <CardBody className="card-body">
+                    <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                      {course.name}
+                    </CardTitle>
+                    <CardText
+                      className="wd-dashboard-course-description overflow-hidden"
+                      style={{ height: "100px" }}
+                    >
+                      {course.description}
+                    </CardText>
+                    
+                    <Button variant="primary">
+                      Go
+                    </Button>
+                    
+                    <Button 
+                      id="wd-edit-course-click"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setCourse(course);
+                      }}
+                      className="btn btn-warning me-2 float-end"
+                    >
+                      Edit
+                    </Button>
+                    
+                    <Button 
+                      onClick={(event) => {
+                        event.preventDefault();
+                        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        dispatch(deleteCourse(course._id) as any);
+                      }}
+                      className="btn btn-danger float-end me-2"
+                      id="wd-delete-course-click"
+                    >
+                      Delete
+                    </Button>
+                  </CardBody>
                 </Link>
-                <button
-                  className="btn btn-warning ms-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCourse(c);
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger float-end"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(deleteCourse(c._id));
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </div>
     </div>
   );
