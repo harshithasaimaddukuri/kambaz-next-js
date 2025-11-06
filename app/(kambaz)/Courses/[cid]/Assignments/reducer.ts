@@ -1,7 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialAssignments = [
+// Export the Assignment interface so it can be imported in other files
+export interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  points: number;
+  due?: string;
+  available?: string;
+  description?: string;
+  dueDate?: string;
+  availableFromDate?: string;
+  availableUntilDate?: string;
+  group?: string;
+  gradeAs?: string;
+  subType?: string;
+  AssignTo?: string;
+}
+
+// Initial assignments data - replace with your database import if needed
+const initialAssignments: Assignment[] = [
   {
     _id: "A101",
     title: "Propulsion Assignment",
