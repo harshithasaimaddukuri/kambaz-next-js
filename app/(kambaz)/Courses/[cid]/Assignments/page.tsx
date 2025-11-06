@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ListGroup, ListGroupItem, Button, Form, Modal } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import { FaPlus, FaTrash } from "react-icons/fa6";
+import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import { IoEllipsisVertical, IoChevronDown } from "react-icons/io5";
 import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
 import { useParams, useRouter } from "next/navigation";
@@ -33,28 +33,33 @@ export default function Assignments() {
 
   const courseAssignments = assignments.filter((amt) => amt.course === cid);
 
-  const formatAssignmentId = (id: string) => id.replace(/^A0*/, "A");
+  const formatAssignmentId = (id: string) => {
+    const numericPart = id.replace(/[^0-9]/g, '');
+    const number = parseInt(numericPart, 10);
+    return `A${number}`;
+  };
 
   const getAssignmentDates = (assignment: Assignment) => {
-    const available = assignment.available 
-      ? new Date(assignment.available).toLocaleDateString('en-US', { 
-          month: 'short', 
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true 
-        })
-      : "May 6 at 12:00am";
+    const formatDate = (dateString: string | undefined, defaultDate: string) => {
+      if (!dateString) return defaultDate;
+      
+      try {
+        const date = new Date(dateString);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const month = months[date.getMonth()];
+        const day = date.getDate();
+        
+        if (defaultDate.includes("12:00am")) {
+          return `${month} ${day} at 12:00am`;
+        }
+        return `${month} ${day} at 11:59pm`;
+      } catch (error) {
+        return defaultDate;
+      }
+    };
     
-    const due = assignment.due
-      ? new Date(assignment.due).toLocaleDateString('en-US', { 
-          month: 'short', 
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true 
-        })
-      : "May 13 at 11:59pm";
+    const available = formatDate(assignment.available, "May 6 at 12:00am");
+    const due = formatDate(assignment.due, "May 13 at 11:59pm");
     
     return { available, due };
   };
@@ -80,6 +85,10 @@ export default function Assignments() {
 
   const handleAddAssignment = () => {
     router.push(`/Courses/${cid}/Assignments/new`);
+  };
+
+  const handleEditAssignment = (assignmentId: string) => {
+    router.push(`/Courses/${cid}/Assignments/${assignmentId}`);
   };
 
   return (
@@ -169,11 +178,23 @@ export default function Assignments() {
                     <FaCheckCircle className="text-success me-2" />
                     <Button
                       variant="link"
+                      className="text-primary p-0 me-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleEditAssignment(assignment._id);
+                      }}
+                      title="Edit Assignment"
+                    >
+                      <FaEdit />
+                    </Button>
+                    <Button
+                      variant="link"
                       className="text-danger p-0 me-2"
                       onClick={(e) => {
                         e.preventDefault();
                         handleDeleteClick(assignment._id);
                       }}
+                      title="Delete Assignment"
                     >
                       <FaTrash />
                     </Button>
