@@ -21,4 +21,3 @@ export default function ModuleEditor({ show, handleClose, dialogTitle, moduleNam
    </Modal.Footer>
   </Modal>
 );}
-

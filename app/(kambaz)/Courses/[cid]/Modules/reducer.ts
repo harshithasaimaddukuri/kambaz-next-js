@@ -1,89 +1,39 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { modules as initialModulesData } from "../../../Database";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createSlice } from "@reduxjs/toolkit";
+import { modules } from "../../../Database";
 import { v4 as uuidv4 } from "uuid";
-
-interface Lesson {
-  _id: string;
-  name: string;
-}
-
-interface Module {
-  _id: string;
-  name: string;
-  course: string;
-  lessons: Lesson[];
-  editing?: boolean;
-}
-
-interface ModulesState {
-  modules: Module[];
-}
-
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
-const initialModules: Module[] = (initialModulesData as any[]).map((m) => ({
-  _id: m._id,
-  name: m.name,
-  course: m.course,
-  lessons: Array.isArray(m.lessons) 
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ? m.lessons.map((l: any) => ({
-        _id: l._id,
-        name: l.name,
-      }))
-    : [],
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editing: (m as any).editing || false, 
-}));
-
-const initialState: ModulesState = {
-  modules: initialModules,
+const initialState = {
+  modules: modules,
 };
-
 const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
-    addModule: (
-      state,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: PayloadAction<any>
-    ) => {
-      const newModule: Module = {
+    addModule: (state, { payload: module }) => {
+      const newModule: any = {
         _id: uuidv4(),
-        name: action.payload.name,
-        course: action.payload.course,
         lessons: [],
-        editing: false,
+        name: module.name,
+        course: module.course,
       };
-      state.modules.push(newModule);
+      state.modules = [...state.modules, newModule] as any;
     },
-    deleteModule: (
-      state,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: PayloadAction<any>
-    ) => {
-      state.modules = state.modules.filter((m) => m._id !== action.payload);
+    deleteModule: (state, { payload: moduleId }) => {
+      state.modules = state.modules.filter(
+        (m: any) => m._id !== moduleId);
     },
-    updateModule: (
-      state,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: PayloadAction<any>
-    ) => {
-      state.modules = state.modules.map((m) =>
-        m._id === action.payload._id ? action.payload : m
-      );
+    updateModule: (state, { payload: module }) => {
+      state.modules = state.modules.map((m: any) =>
+        m._id === module._id ? module : m
+      ) as any;
     },
-    editModule: (
-      state,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: PayloadAction<any>
-    ) => {
-      state.modules = state.modules.map((m) =>
-        m._id === action.payload ? { ...m, editing: true } : m
-      );
+    editModule: (state, { payload: moduleId }) => {
+      state.modules = state.modules.map((m: any) =>
+        m._id === moduleId ? { ...m, editing: true } : m
+      ) as any;
     },
   },
 });
-
-export const { addModule, deleteModule, updateModule, editModule } = modulesSlice.actions;
+export const { addModule, deleteModule, updateModule, editModule } =
+  modulesSlice.actions;
 export default modulesSlice.reducer;
