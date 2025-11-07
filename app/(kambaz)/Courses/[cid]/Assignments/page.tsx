@@ -7,31 +7,28 @@ import { IoEllipsisVertical, IoChevronDown } from "react-icons/io5";
 import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAssignment, Assignment } from "./reducer";
+import { deleteAssignment } from "./reducer";
 import { useState } from "react";
 import * as db from "../../../Database";
-
-interface RootState {
-  assignmentsReducer?: {
-    assignments: Assignment[];
-  };
-}
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
   const router = useRouter();
   const dispatch = useDispatch();
   
-  const storeAssignments = useSelector((state: RootState) => 
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const storeAssignments = useSelector((state: any) => 
     state.assignmentsReducer?.assignments
   );
   
-  const assignments: Assignment[] = storeAssignments || (db.assignments as Assignment[]);
+  // Use store assignments if available, otherwise fall back to database
+  const assignments = storeAssignments || db.assignments || [];
   
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
 
-  const courseAssignments = assignments.filter((amt) => amt.course === cid);
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const courseAssignments = assignments.filter((amt: any) => amt.course === cid);
 
   const formatAssignmentId = (id: string) => {
     const numericPart = id.replace(/[^0-9]/g, '');
@@ -39,7 +36,8 @@ export default function Assignments() {
     return `A${number}`;
   };
 
-  const getAssignmentDates = (assignment: Assignment) => {
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getAssignmentDates = (assignment: any) => {
     const formatDate = (dateString: string | undefined, defaultDate: string) => {
       if (!dateString) return defaultDate;
       
@@ -58,8 +56,8 @@ export default function Assignments() {
       }
     };
     
-    const available = formatDate(assignment.available, "May 6 at 12:00am");
-    const due = formatDate(assignment.due, "May 13 at 11:59pm");
+    const available = formatDate(assignment.available || assignment.availableFromDate, "May 6 at 12:00am");
+    const due = formatDate(assignment.due || assignment.dueDate, "May 13 at 11:59pm");
     
     return { available, due };
   };
@@ -71,8 +69,7 @@ export default function Assignments() {
 
   const confirmDelete = () => {
     if (assignmentToDelete) {
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      dispatch(deleteAssignment(assignmentToDelete) as any);
+      dispatch(deleteAssignment(assignmentToDelete));
     }
     setShowDeleteModal(false);
     setAssignmentToDelete(null);
@@ -141,7 +138,8 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="rounded-0">
-            {courseAssignments.map((assignment) => {
+            {/*eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
+            {courseAssignments.map((assignment: any) => {
               const dates = getAssignmentDates(assignment);
               return (
                 <ListGroupItem

@@ -18,7 +18,7 @@ export default function ModuleControlButtons({ moduleId, deleteModule, editModul
             
             <BsPlus className="fs-1" />
             
-\            <IoEllipsisVertical className="fs-4" />
+            <IoEllipsisVertical className="fs-4" />
         </div>
     );
 }

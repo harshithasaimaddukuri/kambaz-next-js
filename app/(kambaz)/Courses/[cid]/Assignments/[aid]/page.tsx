@@ -4,7 +4,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import * as db from "../../../../Database";
 
 interface Assignment {
@@ -26,11 +25,12 @@ export default function AssignmentEditor() {
     state.assignmentsReducer?.assignments
   );
   
-  const assignments: Assignment[] = storeAssignments || (db.assignments as Assignment[]);
+  // Use store assignments if available, otherwise fall back to database
+  const assignments: Assignment[] = storeAssignments || db.assignments || [];
   
   const isNewAssignment = aid === "new";
   const existingAssignment = !isNewAssignment 
-    ? assignments.find((amt) => amt._id === aid && amt.course === cid)
+    ? assignments.find((amt: Assignment) => amt._id === aid && amt.course === cid)
     : null;
 
   const defaultDescription = `The assignment is available online.
@@ -46,13 +46,13 @@ The landing page should include the following:
 The Kanbas application should include a link to navigate back to the landing page.`;
 
   const [assignment, setAssignment] = useState({
-    _id: isNewAssignment ? uuidv4() : existingAssignment?._id || "",
-    title: existingAssignment?.title || "New Assignment",
+    _id: "",
+    title: "New Assignment",
     course: cid,
-    points: existingAssignment?.points || 100,
-    description: existingAssignment?.description || defaultDescription,
-    due: existingAssignment?.due || "",
-    available: existingAssignment?.available || "",
+    points: 100,
+    description: defaultDescription,
+    due: "",
+    available: "",
   });
 
   useEffect(() => {
@@ -66,17 +66,26 @@ The Kanbas application should include a link to navigate back to the landing pag
         due: existingAssignment.due || "",
         available: existingAssignment.available || "",
       });
+    } else if (isNewAssignment) {
+      // Generate a new ID for new assignments
+      const newId = `A${Date.now()}`;
+      setAssignment(prev => ({
+        ...prev,
+        _id: newId,
+        course: cid
+      }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aid, cid, isNewAssignment, existingAssignment]);
 
   const handleSave = () => {
+    console.log("Saving assignment:", assignment);
+    console.log("Is new assignment:", isNewAssignment);
+    
     if (isNewAssignment) {
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      dispatch(addAssignment(assignment) as any);
+      dispatch(addAssignment(assignment));
     } else {
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      dispatch(updateAssignment(assignment) as any);
+      dispatch(updateAssignment(assignment));
     }
     router.push(`/Courses/${cid}/Assignments`);
   };
@@ -238,11 +247,11 @@ The Kanbas application should include a link to navigate back to the landing pag
       <hr />
 
       <div className="d-flex justify-content-end gap-2 mb-4">
-        <Button variant="secondary" onClick={handleSave}>
-          Save
-        </Button>
-        <Button variant="danger" onClick={handleCancel}>
+        <Button variant="secondary" onClick={handleCancel}>
           Cancel
+        </Button>
+        <Button variant="danger" onClick={handleSave}>
+          Save
         </Button>
       </div>
     </div>
