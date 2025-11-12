@@ -26,6 +26,11 @@ export default function Labs() {
             Lab 4: Handling Events
           </Link>
        </li>
+       <li>
+          <Link href="/Labs/Lab5" id="wd-lab5-link">
+            Lab 5: Restful Web APIs and Express js
+          </Link>
+       </li>
       </ul>
     </div>
   );

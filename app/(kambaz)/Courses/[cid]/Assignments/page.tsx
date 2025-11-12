@@ -7,9 +7,9 @@ import { IoEllipsisVertical, IoChevronDown } from "react-icons/io5";
 import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAssignment } from "./reducer";
-import { useState } from "react";
-import * as db from "../../../Database";
+import { deleteAssignment, setAssignments } from "./reducer";
+import { useState, useEffect } from "react";
+import * as client from "./client";
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
@@ -17,15 +17,28 @@ export default function Assignments() {
   const dispatch = useDispatch();
   
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const storeAssignments = useSelector((state: any) => 
-    state.assignmentsReducer?.assignments
+  const assignments = useSelector((state: any) => 
+    state.assignmentsReducer?.assignments || []
   );
-  
-  // Use store assignments if available, otherwise fall back to database
-  const assignments = storeAssignments || db.assignments || [];
   
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
+
+  // Fetch assignments from server on mount
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const serverAssignments = await client.findAssignmentsForCourse(cid);
+        dispatch(setAssignments(serverAssignments));
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    };
+    
+    if (cid) {
+      fetchAssignments();
+    }
+  }, [cid, dispatch]);
 
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const courseAssignments = assignments.filter((amt: any) => amt.course === cid);
@@ -67,9 +80,14 @@ export default function Assignments() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete));
+      try {
+        await client.deleteAssignment(assignmentToDelete);
+        dispatch(deleteAssignment(assignmentToDelete));
+      } catch (error) {
+        console.error("Error deleting assignment:", error);
+      }
     }
     setShowDeleteModal(false);
     setAssignmentToDelete(null);

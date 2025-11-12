@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
 import { useState, useEffect } from "react";
-import * as db from "../../../../Database";
+import * as client from "../client";
 
 interface Assignment {
   _id: string;
@@ -20,17 +20,15 @@ export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
   const router = useRouter();
   const dispatch = useDispatch();
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const storeAssignments = useSelector((state: any) => 
-    state.assignmentsReducer?.assignments
-  );
   
-  // Use store assignments if available, otherwise fall back to database
-  const assignments: Assignment[] = storeAssignments || db.assignments || [];
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const assignments = useSelector((state: any) => 
+    state.assignmentsReducer?.assignments || []
+  );
   
   const isNewAssignment = aid === "new";
   const existingAssignment = !isNewAssignment 
-    ? assignments.find((amt: Assignment) => amt._id === aid && amt.course === cid)
+    ? assignments.find((amt: Assignment) => amt._id === aid)
     : null;
 
   const defaultDescription = `The assignment is available online.
@@ -38,10 +36,10 @@ export default function AssignmentEditor() {
 Submit a link to the landing page of your Web application running on Netlify.
 
 The landing page should include the following:
-• Your full name and section
-• Links to each of the lab assignments
-• Link to the Kanbas application
-• Links to all relevant source code repositories
+- Your full name and section
+- Links to each of the lab assignments
+- Link to the Kanbas application
+- Links to all relevant source code repositories
 
 The Kanbas application should include a link to navigate back to the landing page.`;
 
@@ -67,7 +65,6 @@ The Kanbas application should include a link to navigate back to the landing pag
         available: existingAssignment.available || "",
       });
     } else if (isNewAssignment) {
-      // Generate a new ID for new assignments
       const newId = `A${Date.now()}`;
       setAssignment(prev => ({
         ...prev,
@@ -78,16 +75,19 @@ The Kanbas application should include a link to navigate back to the landing pag
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aid, cid, isNewAssignment, existingAssignment]);
 
-  const handleSave = () => {
-    console.log("Saving assignment:", assignment);
-    console.log("Is new assignment:", isNewAssignment);
-    
-    if (isNewAssignment) {
-      dispatch(addAssignment(assignment));
-    } else {
-      dispatch(updateAssignment(assignment));
+  const handleSave = async () => {
+    try {
+      if (isNewAssignment) {
+        const newAssignment = await client.createAssignment(cid, assignment);
+        dispatch(addAssignment(newAssignment));
+      } else {
+        const updatedAssignment = await client.updateAssignment(assignment);
+        dispatch(updateAssignment(updatedAssignment));
+      }
+      router.push(`/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error("Error saving assignment:", error);
     }
-    router.push(`/Courses/${cid}/Assignments`);
   };
 
   const handleCancel = () => {

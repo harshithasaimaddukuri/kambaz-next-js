@@ -1,39 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { enrollments } from "../Database";
+import * as db from "../Database";
 
-interface Enrollment {
-  _id: string;
-  user: string;
-  course: string;
-}
-
-interface EnrollmentsState {
-  enrollments: Enrollment[];
-}
-
-const initialState: EnrollmentsState = {
-  enrollments: enrollments,
+const initialState = {
+  enrollments: db.enrollments,
 };
 
 const enrollmentsSlice = createSlice({
   name: "enrollments",
   initialState,
   reducers: {
-    enrollUser: (state, { payload }: { payload: { userId: string; courseId: string } }) => {
-      const newEnrollment: Enrollment = {
-        _id: Date.now().toString(),
-        user: payload.userId,
-        course: payload.courseId,
-      };
-      state.enrollments = [...state.enrollments, newEnrollment];
-    },
-    unenrollUser: (state, { payload }: { payload: { userId: string; courseId: string } }) => {
-      state.enrollments = state.enrollments.filter(
-        (e) => !(e.user === payload.userId && e.course === payload.courseId)
+    enrollCourse: (state, { payload: { userId, courseId } }) => {
+      const alreadyEnrolled = state.enrollments.some(
+        (enrollment: any) =>
+          enrollment.user === userId && enrollment.course === courseId
       );
+
+      if (!alreadyEnrolled) {
+        const newEnrollment = {
+          _id: new Date().getTime().toString(),
+          user: userId,
+          course: courseId,
+          enrolledAt: new Date().toISOString(), 
+        };
+        state.enrollments = [...state.enrollments, newEnrollment] as any;
+      }
+    },
+    unenrollCourse: (state, { payload: { userId, courseId } }) => {
+      state.enrollments = state.enrollments.filter(
+        (enrollment: any) => 
+          !(enrollment.user === userId && enrollment.course === courseId)
+      ) as any;
     },
   },
 });
 
-export const { enrollUser, unenrollUser } = enrollmentsSlice.actions;
+export const { enrollCourse, unenrollCourse } = enrollmentsSlice.actions;
 export default enrollmentsSlice.reducer;
