@@ -21,7 +21,8 @@ export default function UserRoutes(app, db) {
     const user = dao.findUserByCredentials(username, password);
     if (user) {
       req.session["currentUser"] = user;
-      currentUser = user;
+      curcd kambaz-next-js
+      rentUser = user;
       res.json(user);
     } else {
       res.status(401).json({ message: "Invalid credentials" });

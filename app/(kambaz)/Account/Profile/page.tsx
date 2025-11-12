@@ -5,42 +5,52 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { Button, FormControl } from "react-bootstrap";
+import * as client from "../client";
 
 export default function Profile() {
   const [profile, setProfile] = useState<any>({});
   const dispatch = useDispatch();
   const router = useRouter();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  
-  const fetchProfile = () => {
-    if (!currentUser) {
+
+  const fetchProfile = async () => {
+    try {
+      const user = await client.profile();
+      dispatch(setCurrentUser(user));
+      setProfile(user);
+    } catch (err) {
       router.push("/Account/Signin");
-      return;
     }
-    setProfile(currentUser);
   };
-  
-  const signout = () => {
+
+  const updateProfile = async () => {
+    try {
+      const updatedProfile = await client.updateUser(profile);
+      dispatch(setCurrentUser(updatedProfile));
+      alert("Profile updated successfully!");
+    } catch (err) {
+      alert("Failed to update profile");
+    }
+  };
+
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     router.push("/Account/Signin");
   };
-  
+
   useEffect(() => {
-    fetchProfile();
-  }, [currentUser]);
-  
-  if (!currentUser) {
-    return (
-      <div className="wd-profile-screen">
-        <h3>Please sign in to view profile</h3>
-      </div>
-    );
-  }
-  
+    if (!currentUser) {
+      fetchProfile();
+    } else {
+      setProfile(currentUser);
+    }
+  }, []);
+
   return (
     <div className="wd-profile-screen">
       <h3>Profile</h3>
-      {profile && (
+      {profile._id && (
         <div>
           <FormControl 
             id="wd-username" 
@@ -81,7 +91,6 @@ export default function Profile() {
           <FormControl 
             id="wd-email" 
             className="mb-2"
-            type="email"
             value={profile.email || ''}
             placeholder="Email"
             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
@@ -89,7 +98,7 @@ export default function Profile() {
           <select 
             className="form-control mb-2" 
             id="wd-role"
-            value={profile.role || 'USER'}
+            value={profile.role || 'STUDENT'}
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
           >
             <option value="USER">User</option>
@@ -98,10 +107,15 @@ export default function Profile() {
             <option value="STUDENT">Student</option>
           </select>
           <Button 
+            onClick={updateProfile}
+            className="btn btn-primary w-100 mb-2"
+          >
+            Update
+          </Button>
+          <Button 
             onClick={signout} 
-            className="w-100 mb-2" 
+            className="btn btn-danger w-100 mb-2" 
             id="wd-signout-btn"
-            variant="danger"
           >
             Sign out
           </Button>
