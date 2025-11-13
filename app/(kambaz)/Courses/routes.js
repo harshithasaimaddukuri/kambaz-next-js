@@ -1,52 +1,60 @@
-import CoursesDao from "./dao.js";
+import coursesdao from "./dao.js";
 import EnrollmentsDao from "../Enrollments/dao.js"; 
 
 export default function CourseRoutes(app, db) {
-  const dao = CoursesDao(db);
-  const enrollmentsDao = EnrollmentsDao(db);
+  db.courses = db.courses || [];
+
+  app.get("/api/courses", (req, res) => {
+    res.json(db.courses);
+  });
   
-  const findAllCourses = (req, res) => {
-    const courses = dao.findAllCourses();
-    res.send(courses);
-  };
+  app.get("/api/courses/enrolled/:userId", (req, res) => {
+    const userEnrollments = db.enrollments?.filter(e => e.user === req.params.userId) || [];
+    const enrolledCourseIds = userEnrollments.map(e => e.course);
+    const enrolledCourses = db.courses?.filter(c => enrolledCourseIds.includes(c._id)) || [];
+    res.json(enrolledCourses);
+  });
   
-  const createCourse = (req, res) => {
-    const currentUser = req.session["currentUser"]; 
-    if (!currentUser) {
-      res.status(401).json({ message: "You must be signed in to create a course" });
-      return;
-    }
-    const newCourse = dao.createCourse(req.body);
-    enrollmentsDao.enrollUserInCourse(currentUser._id, newCourse._id); 
-    res.json(newCourse);
-  };
-  
-  const deleteCourse = (req, res) => {
-    const { courseId } = req.params;
-    dao.deleteCourse(courseId);
-    res.sendStatus(204);
-  };
-  
-  const updateCourse = (req, res) => {
-    const { courseId } = req.params;
-    const updatedCourse = dao.updateCourse(courseId, req.body); 
-    if (updatedCourse) {
-      res.json(updatedCourse); 
+  app.get("/api/courses/:courseId", (req, res) => {
+    const course = db.courses?.find(c => c._id === req.params.courseId);
+    if (course) {
+      res.json(course);
     } else {
-      res.sendStatus(404);
+      res.status(404).json({ message: "Course not found" });
     }
-  };
+  });
   
-  const findCoursesForEnrolledUser = (req, res) => {
-    // TODO: Implement logic to find courses for enrolled user
-    const courses = dao.findAllCourses(); 
-    res.json(courses);
-  };
+  app.post("/api/courses", (req, res) => {
+    const newCourse = {
+      ...req.body,
+      _id: req.body._id || Date.now().toString()
+    };
+    db.courses.push(newCourse);
+    res.json(newCourse);
+  });
   
-  // RESTful Routes
-  app.get("/api/courses", findAllCourses);
-  app.post("/api/courses", createCourse);
-  app.delete("/api/courses/:courseId", deleteCourse);
-  app.put("/api/courses/:courseId", updateCourse);
-  app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+  app.put("/api/courses/:courseId", (req, res) => {
+    const index = db.courses?.findIndex(c => c._id === req.params.courseId);
+    if (index !== -1 && index !== undefined) {
+      db.courses[index] = {
+        ...db.courses[index],
+        ...req.body,
+        _id: req.params.courseId
+      };
+      res.json(db.courses[index]);
+    } else {
+      res.status(404).json({ message: "Course not found" });
+    }
+  });
+  
+  app.delete("/api/courses/:courseId", (req, res) => {
+    const index = db.courses?.findIndex(c => c._id === req.params.courseId);
+    if (index !== -1 && index !== undefined) {
+      db.courses.splice(index, 1);
+      db.enrollments = db.enrollments?.filter(e => e.course !== req.params.courseId) || [];
+      res.sendStatus(204);
+    } else {
+      res.status(404).json({ message: "Course not found" });
+    }
+  });
 }

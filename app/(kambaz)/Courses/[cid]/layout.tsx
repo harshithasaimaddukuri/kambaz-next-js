@@ -13,9 +13,9 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const course = courses.find((course: any) => course._id === cid);
   const [isNavVisible, setIsNavVisible] = useState(true);
-
+  
   return (
-    <div id="wd-courses">
+    <div id="wd-courses" className="container-fluid px-4 py-3">
       <h2 className="text-danger">
         <FaAlignJustify 
           className="me-4 fs-4 mb-1" 
@@ -32,13 +32,13 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
         {course?.name} &gt; <Breadcrumb course={course} />
       </h2>
       <hr />
-      <div className="d-flex">
+      <div className="row">
         {isNavVisible && (
-          <div className="d-none d-md-block">
+          <div className="col-md-2 d-none d-md-block">
             <CoursesNavigation />
           </div>
         )}
-        <div className="flex-fill">
+        <div className={isNavVisible ? "col-md-10" : "col-12"}>
           {children}
         </div>
       </div>

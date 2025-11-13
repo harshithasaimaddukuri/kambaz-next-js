@@ -1,10 +1,14 @@
 /*eslint-disable*/
 import axios from "axios";
 
-const axiosWithCredentials = axios.create({ withCredentials: true });
-
-export const HTTP_SERVER = "http://localhost:4000";
+// Use environment variable for production, fallback to localhost for development
+export const HTTP_SERVER = process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:4000";
 export const USERS_API = `${HTTP_SERVER}/api/users`;
+
+const axiosWithCredentials = axios.create({ 
+  baseURL: HTTP_SERVER,
+  withCredentials: true 
+});
 
 export const signup = async (user: any) => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);

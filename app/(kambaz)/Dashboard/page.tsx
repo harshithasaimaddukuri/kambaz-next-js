@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react/jsx-key */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
+ /* eslint-disable @typescript-eslint/ban-ts-comment */
+ 
 // @ts-nocheck
 
 "use client";
@@ -12,6 +10,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { setCourses } from "../Courses/reducer";
 import * as client from "../Courses/client";
+import * as enrollmentClient from "../Enrollments/client";
 import {
   Row,
   Col,
@@ -146,15 +145,32 @@ export default function Dashboard() {
     return courses.some(c => c._id === courseId);
   };
 
-  // These will be implemented in the Enrollments session
+  // Enrollment functions
   const handleEnroll = async (courseId: string) => {
-    console.log("Enrollment will be implemented in next session");
-    // TODO: Implement with enrollment client
+    try {
+      if (!currentUser) {
+        console.error("No user logged in");
+        return;
+      }
+      await enrollmentClient.enrollInCourse(currentUser._id, courseId);
+      await fetchCourses(); // Refresh the enrolled courses
+      await fetchAllCourses(); // Refresh all courses if showing
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
+    }
   };
 
   const handleUnenroll = async (courseId: string) => {
-    console.log("Unenrollment will be implemented in next session");
-    // TODO: Implement with enrollment client
+    try {
+      if (!currentUser) {
+        console.error("No user logged in");
+        return;
+      }
+      await enrollmentClient.unenrollFromCourse(currentUser._id, courseId);
+      await fetchCourses(); // Refresh the enrolled courses
+    } catch (error) {
+      console.error("Error unenrolling from course:", error);
+    }
   };
 
   const visibleCourses = showAllCourses ? allCourses : courses;
@@ -286,7 +302,6 @@ export default function Dashboard() {
                         variant="danger"
                         className="w-100 mb-2"
                         onClick={() => handleUnenroll(course._id)}
-                        disabled // Will enable in enrollments session
                       >
                         Unenroll
                       </Button>
@@ -295,7 +310,6 @@ export default function Dashboard() {
                         variant="success"
                         className="w-100 mb-2"
                         onClick={() => handleEnroll(course._id)}
-                        disabled // Will enable in enrollments session
                       >
                         Enroll
                       </Button>

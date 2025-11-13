@@ -7,7 +7,6 @@ import WorkingWithArrays from "./WorkingWithArrays";
 import HttpClient from "./HttpClient";
 import WorkingWithObjectsAsynchronously from "./WorkingWithObjectsAsynchronously";
 import WorkingWithArraysAsynchronously from "./WorkingWithArraysAsynchronously";
-import SimpleTest from "./SimpleTest";
 
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
 
@@ -15,7 +14,6 @@ export default function Lab5() {
   return (
     <div id="wd-lab5">
       <h2>Lab 5</h2>
-      <SimpleTest />
       <div className="list-group">
         <a href={`${HTTP_SERVER}/lab5/welcome`} 
            className="list-group-item">
