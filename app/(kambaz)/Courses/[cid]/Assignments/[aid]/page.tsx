@@ -51,6 +51,7 @@ The Kanbas application should include a link to navigate back to the landing pag
     description: defaultDescription,
     due: "",
     available: "",
+    assignTo: "Everyone", // Added assignTo field
   });
 
   useEffect(() => {
@@ -63,6 +64,7 @@ The Kanbas application should include a link to navigate back to the landing pag
         description: existingAssignment.description || defaultDescription,
         due: existingAssignment.due || "",
         available: existingAssignment.available || "",
+        assignTo: "Everyone",
       });
     } else if (isNewAssignment) {
       const newId = `A${Date.now()}`;
@@ -197,9 +199,13 @@ The Kanbas application should include a link to navigate back to the landing pag
           <Card className="p-3">
             <Form.Group className="mb-3">
               <Form.Label htmlFor="wd-assign-to">Assign to</Form.Label>
-              <div className="wd-assign-to-container">
-                <span className="wd-assign-tag">Everyone <button className="wd-remove-tag">×</button></span>
-              </div>
+              <Form.Control 
+                type="text" 
+                id="wd-assign-to"
+                value={assignment.assignTo}
+                onChange={(e) => setAssignment({ ...assignment, assignTo: e.target.value })}
+                placeholder="Everyone"
+              />
             </Form.Group>
 
             <Row>
