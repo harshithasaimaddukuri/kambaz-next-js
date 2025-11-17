@@ -68,7 +68,6 @@ export default function Dashboard() {
 
   const isFaculty = currentUser?.role === "FACULTY";
 
-  // Fetch enrolled courses (my courses) on component mount
   const fetchCourses = async () => {
     try {
       if (currentUser) {
@@ -80,7 +79,6 @@ export default function Dashboard() {
     }
   };
 
-  // Fetch all courses when needed
   const fetchAllCourses = async () => {
     try {
       const courses = await client.fetchAllCourses();
@@ -100,12 +98,10 @@ export default function Dashboard() {
     }
   }, [showAllCourses]);
 
-  // Server integrated CRUD operations
   const onAddNewCourse = async () => {
     try {
       const newCourse = await client.createCourse(course);
       dispatch(setCourses([...courses, newCourse]));
-      // Reset form
       setCourse({
         _id: "0",
         name: "New Course",
@@ -130,6 +126,11 @@ export default function Dashboard() {
   };
 
   const onUpdateCourse = async () => {
+    if (course._id === "0") {
+      alert("Please edit a course first");
+      return;
+    }
+    
     try {
       await client.updateCourse(course);
       dispatch(setCourses(courses.map((c: any) => 
@@ -140,12 +141,10 @@ export default function Dashboard() {
     }
   };
 
-  // For now, enrollment status is based on whether course is in "my courses"
   const isEnrolled = (courseId: string) => {
     return courses.some(c => c._id === courseId);
   };
 
-  // Enrollment functions
   const handleEnroll = async (courseId: string) => {
     try {
       if (!currentUser) {
@@ -153,8 +152,8 @@ export default function Dashboard() {
         return;
       }
       await enrollmentClient.enrollInCourse(currentUser._id, courseId);
-      await fetchCourses(); // Refresh the enrolled courses
-      await fetchAllCourses(); // Refresh all courses if showing
+      await fetchCourses(); 
+      await fetchAllCourses(); 
     } catch (error) {
       console.error("Error enrolling in course:", error);
     }
@@ -167,7 +166,7 @@ export default function Dashboard() {
         return;
       }
       await enrollmentClient.unenrollFromCourse(currentUser._id, courseId);
-      await fetchCourses(); // Refresh the enrolled courses
+      await fetchCourses(); 
     } catch (error) {
       console.error("Error unenrolling from course:", error);
     }
