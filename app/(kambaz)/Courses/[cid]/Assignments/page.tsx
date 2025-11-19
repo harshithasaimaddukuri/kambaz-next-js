@@ -169,14 +169,12 @@ export default function Assignments() {
                   <div className="flex-grow-1">
                     <Link
                       href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                      className="text-decoration-none"
+                      className="text-decoration-none text-dark fw-bold"
                     >
-                      <strong className="text-dark">
-                        {formatAssignmentId(assignment._id)}
-                      </strong>
+                      {assignment.title}
                     </Link>
                     <div className="text-muted small mt-1">
-                      <span className="text-danger">{assignment.title}</span>
+                      <span>{formatAssignmentId(assignment._id)}</span>
                       <span className="mx-1">|</span>
                       <span>
                         <strong>Not available until</strong> {dates.available}
