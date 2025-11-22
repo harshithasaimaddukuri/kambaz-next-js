@@ -93,15 +93,16 @@ export default function Dashboard() {
   }, [currentUser]);
 
   useEffect(() => {
-    if (showAllCourses) {
+    if (showAllCourses || isFaculty) {
       fetchAllCourses();
     }
-  }, [showAllCourses]);
+  }, [showAllCourses, isFaculty]);
 
   const onAddNewCourse = async () => {
     try {
       const newCourse = await client.createCourse(course);
       dispatch(setCourses([...courses, newCourse]));
+      fetchAllCourses();
       setCourse({
         _id: "0",
         name: "New Course",
@@ -120,6 +121,7 @@ export default function Dashboard() {
     try {
       await client.deleteCourse(courseId);
       dispatch(setCourses(courses.filter((c: any) => c._id !== courseId)));
+      fetchAllCourses();
     } catch (error) {
       console.error("Error deleting course:", error);
     }
@@ -136,6 +138,7 @@ export default function Dashboard() {
       dispatch(setCourses(courses.map((c: any) => 
         c._id === course._id ? course : c
       )));
+      fetchAllCourses();
     } catch (error) {
       console.error("Error updating course:", error);
     }
@@ -172,7 +175,14 @@ export default function Dashboard() {
     }
   };
 
-  const visibleCourses = showAllCourses ? allCourses : courses;
+  // If no user is signed in, show empty array
+  // If faculty, show all courses
+  // Otherwise, show based on toggle
+  const visibleCourses = !currentUser 
+    ? [] 
+    : isFaculty 
+      ? allCourses 
+      : (showAllCourses ? allCourses : courses);
 
   return (
     <div id="wd-dashboard" className="p-4">
@@ -224,16 +234,21 @@ export default function Dashboard() {
 
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 id="wd-dashboard-published">
-          {showAllCourses ? "All Courses" : "My Courses"} (
-          {visibleCourses.length})
+          {isFaculty 
+            ? `All Courses (${visibleCourses.length})`
+            : `${showAllCourses ? "All Courses" : "My Courses"} (${visibleCourses.length})`
+          }
         </h2>
-        <Button
-          variant="primary"
-          id="wd-enrollments-button"
-          onClick={() => setShowAllCourses(!showAllCourses)}
-        >
-          {showAllCourses ? "My Courses" : "All Courses"}
-        </Button>
+        {/* Hide toggle button for faculty */}
+        {!isFaculty && currentUser && (
+          <Button
+            variant="primary"
+            id="wd-enrollments-button"
+            onClick={() => setShowAllCourses(!showAllCourses)}
+          >
+            {showAllCourses ? "My Courses" : "All Courses"}
+          </Button>
+        )}
       </div>
 
       <hr />
@@ -249,7 +264,8 @@ export default function Dashboard() {
                 style={{ width: "300px" }}
               >
                 <Card>
-                  {enrolled ? (
+                  {/* Faculty can always access courses, students need enrollment */}
+                  {(isFaculty || enrolled) ? (
                     <Link
                       href={`/Courses/${course._id}/Home`}
                       className="wd-dashboard-course-link text-decoration-none text-dark"
@@ -296,25 +312,30 @@ export default function Dashboard() {
                   )}
 
                   <CardBody className="pt-0">
-                    {enrolled ? (
-                      <Button
-                        variant="danger"
-                        className="w-100 mb-2"
-                        onClick={() => handleUnenroll(course._id)}
-                      >
-                        Unenroll
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="success"
-                        className="w-100 mb-2"
-                        onClick={() => handleEnroll(course._id)}
-                      >
-                        Enroll
-                      </Button>
+                    {/* Only show Enroll/Unenroll for non-faculty users */}
+                    {!isFaculty && (
+                      <>
+                        {enrolled ? (
+                          <Button
+                            variant="danger"
+                            className="w-100 mb-2"
+                            onClick={() => handleUnenroll(course._id)}
+                          >
+                            Unenroll
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="success"
+                            className="w-100 mb-2"
+                            onClick={() => handleEnroll(course._id)}
+                          >
+                            Enroll
+                          </Button>
+                        )}
+                      </>
                     )}
 
-                    {isFaculty && enrolled && (
+                    {isFaculty && (
                       <div className="d-flex gap-2">
                         <Button
                           id="wd-edit-course-click"
