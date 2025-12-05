@@ -20,10 +20,7 @@ export default function CourseNavigation() {
   return (
     <div id="wd-courses-navigation" className="list-group fs-5 rounded-0">
       {links.map((link) => {
-        const path =
-          link.name === "People"
-            ? `/Courses/${cid}/People/Table`
-            : `/Courses/${cid}/${link.name}`;
+        const path = `/Kambaz/Courses/${cid}/${link.name}`;
         const isActive = pathname.includes(link.name);
 
         return (
@@ -33,8 +30,8 @@ export default function CourseNavigation() {
             id={link.id}
             className={`list-group-item list-group-item-action border-0 w-100 ${
               isActive
-                ? "border-start border-4 border-dark text-dark" 
-                : "text-danger" 
+                ? "border-start border-4 border-dark text-dark"
+                : "text-danger"
             }`}
           >
             {link.name}

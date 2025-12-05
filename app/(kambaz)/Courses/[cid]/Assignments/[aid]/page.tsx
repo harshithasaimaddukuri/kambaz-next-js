@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
 import { useState, useEffect } from "react";
-import * as client from "../client";
+import * as client from "../../../client";
 
 interface Assignment {
   _id: string;
@@ -51,7 +51,7 @@ The Kanbas application should include a link to navigate back to the landing pag
     description: defaultDescription,
     due: "",
     available: "",
-    assignTo: "Everyone", // Added assignTo field
+    assignTo: "Everyone",
   });
 
   useEffect(() => {
@@ -77,13 +77,14 @@ The Kanbas application should include a link to navigate back to the landing pag
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aid, cid, isNewAssignment, existingAssignment]);
 
+  // UPDATED: now passes cid to both create and update
   const handleSave = async () => {
     try {
       if (isNewAssignment) {
-        const newAssignment = await client.createAssignment(cid, assignment);
+        const newAssignment = await client.createAssignmentForCourse(cid, assignment);
         dispatch(addAssignment(newAssignment));
       } else {
-        const updatedAssignment = await client.updateAssignment(assignment);
+        const updatedAssignment = await client.updateAssignment(cid, assignment);
         dispatch(updateAssignment(updatedAssignment));
       }
       router.push(`/Courses/${cid}/Assignments`);

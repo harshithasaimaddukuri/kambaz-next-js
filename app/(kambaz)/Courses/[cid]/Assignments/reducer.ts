@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import * as db from "../../../Database";
 
 const initialState = {
-  assignments: db.assignments || [],
+  assignments: [] as any[],
 };
 
 const assignmentsSlice = createSlice({
@@ -18,17 +17,14 @@ const assignmentsSlice = createSlice({
         ...action.payload,
         _id: action.payload._id || `A${Date.now()}`,
       };
-      console.log("Adding assignment:", newAssignment);
       state.assignments = [...state.assignments, newAssignment] as any;
     },
     deleteAssignment: (state, action) => {
-      console.log("Deleting assignment ID:", action.payload);
       state.assignments = state.assignments.filter(
         (assignment: any) => assignment._id !== action.payload
       ) as any;
     },
     updateAssignment: (state, action) => {
-      console.log("Updating assignment:", action.payload);
       state.assignments = state.assignments.map((assignment: any) =>
         assignment._id === action.payload._id ? action.payload : assignment
       ) as any;
@@ -38,5 +34,4 @@ const assignmentsSlice = createSlice({
 
 export const { setAssignments, addAssignment, deleteAssignment, updateAssignment } = 
   assignmentsSlice.actions;
-
 export default assignmentsSlice.reducer;

@@ -44,20 +44,20 @@ export default function Modules() {
     } 
   }; 
 
-  // API handler for Delete Module 
+  // API handler for Delete Module - UPDATED: now passes cid
   const handleDeleteModule = async (moduleId: string) => { 
     try { 
-      await client.deleteModule(moduleId); 
+      await client.deleteModule(cid, moduleId); 
       dispatch(deleteModule(moduleId)); 
     } catch (error) { 
       console.error("Error deleting module:", error); 
     } 
   }; 
 
-  // API handler for Update Module (called when editing finishes) 
+  // API handler for Update Module - UPDATED: now passes cid
   const handleUpdateModule = async (updatedModule: any) => { 
     try { 
-      await client.updateModule(updatedModule); 
+      await client.updateModule(cid, updatedModule); 
       dispatch(updateModule(updatedModule)); 
     } catch (error) { 
       console.error("Error updating module:", error); 
@@ -73,7 +73,6 @@ export default function Modules() {
       /> 
       <ListGroup id="wd-modules" className="rounded-0"> 
         {modules
-          // Filter is removed as the API call is now course-specific
           .map((module: any) => ( 
             <ListGroupItem 
               key={module._id} 
