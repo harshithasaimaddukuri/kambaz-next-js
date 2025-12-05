@@ -18,8 +18,14 @@ export interface User {
   _id?: string;
   username: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
+  section?: string;
   role?: string;
+  loginId?: string;
+  lastActivity?: string;
+  totalActivity?: string;
 }
 
 export const findAllUsers = async () => {
