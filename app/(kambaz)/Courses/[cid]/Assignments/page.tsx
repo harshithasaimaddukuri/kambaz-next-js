@@ -9,7 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAssignment, setAssignments } from "./reducer";
 import { useState, useEffect } from "react";
-import * as client from "../../client";
+import * as client from "./client";
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
@@ -80,11 +80,10 @@ export default function Assignments() {
     setShowDeleteModal(true);
   };
 
-  // UPDATED: now passes cid
   const confirmDelete = async () => {
     if (assignmentToDelete) {
       try {
-        await client.deleteAssignment(cid, assignmentToDelete);
+        await client.deleteAssignment(assignmentToDelete);
         dispatch(deleteAssignment(assignmentToDelete));
       } catch (error) {
         console.error("Error deleting assignment:", error);

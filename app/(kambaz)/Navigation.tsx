@@ -35,16 +35,26 @@ export default function KambazNavigation() {
       >
         <img src="/images/NEU.png" width="75px" alt="Northeastern University" />
       </ListGroupItem>
-
+      
       <ListGroupItem className="border-0 bg-black text-center p-0">
-        <div className="py-2"></div>
+      <div className="py-2"></div>
       </ListGroupItem>
 
-      <ListGroupItem className={`border-0 text-center ${isAccountActive ? "bg-white" : "bg-black"}`}>
-        <Link href="/Account" id="wd-account-link" className="text-decoration-none">
+      <ListGroupItem 
+        className={`border-0 text-center ${
+          isAccountActive ? "bg-white" : "bg-black"
+        }`}
+      >
+        <Link
+          href="/Account"
+          id="wd-account-link"
+          className="text-decoration-none"
+        >
           <FaRegCircleUser className={`fs-1 ${isAccountActive ? "text-danger" : "text-white"}`} />
           <div className="py-1"></div>
-          <span className={isAccountActive ? "text-danger" : "text-white"}>Account</span>
+          <span className={isAccountActive ? "text-danger" : "text-white"}>
+            Account
+          </span>
         </Link>
       </ListGroupItem>
 
@@ -58,11 +68,21 @@ export default function KambazNavigation() {
 
         return (
           <div key={link.id}>
-            <ListGroupItem className={`border-0 text-center ${isActive ? "bg-white" : "bg-black"}`}>
-              <Link href={link.path} id={link.id} className="text-decoration-none">
+            <ListGroupItem 
+              className={`border-0 text-center ${
+                isActive ? "bg-white" : "bg-black"
+              }`}
+            >
+              <Link
+                href={link.path}
+                id={link.id}
+                className="text-decoration-none"
+              >
                 <Icon className="fs-1 text-danger" />
                 <div className="py-1"></div>
-                <span className={isActive ? "text-dark" : "text-white"}>{link.label}</span>
+                <span className={isActive ? "text-dark" : "text-white"}>
+                  {link.label}
+                </span>
               </Link>
             </ListGroupItem>
             <ListGroupItem className="border-0 bg-black text-center p-0">
