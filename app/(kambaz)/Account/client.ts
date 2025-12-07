@@ -1,10 +1,8 @@
 /*eslint-disable*/
 import axios from "axios";
-
 // Use environment variable for production, fallback to localhost for development
 export const HTTP_SERVER = process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:4000";
 export const USERS_API = `${HTTP_SERVER}/api/users`;
-
 const axiosWithCredentials = axios.create({ 
   baseURL: HTTP_SERVER,
   withCredentials: true 
@@ -32,5 +30,35 @@ export const signout = async () => {
 
 export const updateUser = async (user: any) => {
   const response = await axiosWithCredentials.put(`${USERS_API}/${user._id}`, user);
+  return response.data;
+};
+
+export const findAllUsers = async () => {
+  const response = await axiosWithCredentials.get(USERS_API);
+  return response.data;
+};
+
+export const findUsersByRole = async (role: string) => {
+  const response = await axios.get(`${USERS_API}?role=${role}`);
+  return response.data;
+};
+
+export const findUsersByPartialName = async (name: string) => {
+  const response = await axios.get(`${USERS_API}?name=${name}`);
+  return response.data;
+};
+
+export const findUserById = async (id: string) => {
+  const response = await axios.get(`${USERS_API}/${id}`);
+  return response.data;
+};
+
+export const deleteUser = async (userId: string) => {
+  const response = await axios.delete(`${USERS_API}/${userId}`);
+  return response.data;
+};
+
+export const createUser = async (user: any) => {
+  const response = await axios.post(`${USERS_API}`, user);
   return response.data;
 };
