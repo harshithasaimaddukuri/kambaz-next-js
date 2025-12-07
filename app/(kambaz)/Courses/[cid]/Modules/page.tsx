@@ -73,7 +73,6 @@ export default function Modules() {
       /> 
       <ListGroup id="wd-modules" className="rounded-0"> 
         {modules
-          // Filter is removed as the API call is now course-specific
           .map((module: any) => ( 
             <ListGroupItem 
               key={module._id} 

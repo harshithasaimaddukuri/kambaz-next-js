@@ -1,9 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import PeopleTable from "./Table";
+import * as client from "../../client";
+
 export default function People() {
-    return (
-      <div id="wd-people">
-        <h1>People</h1>
-        <p>This is the People page..</p>
-      </div>
-    );
-  }
-  
+  const { cid } = useParams();
+  const [users, setUsers] = useState<any[]>([]);
+
+  const fetchUsers = async () => {
+    const users = await client.findUsersForCourse(cid as string);
+    setUsers(users);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [cid]);
+
+  return (
+    <div id="wd-people">
+      <h1>People</h1>
+      <PeopleTable users={users} fetchUsers={fetchUsers} />
+    </div>
+  );
+}
