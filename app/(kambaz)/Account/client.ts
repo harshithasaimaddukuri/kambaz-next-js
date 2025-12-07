@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import axios from "axios";
 // Use environment variable for production, fallback to localhost for development
-export const HTTP_SERVER = process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:4000";
+export const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
 export const USERS_API = `${HTTP_SERVER}/api/users`;
 const axiosWithCredentials = axios.create({ 
   baseURL: HTTP_SERVER,
